@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古文探究練習｜學生版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1a1714;--ink-mid:#3d3830;--ink-lt:#7a7268;
+  --paper:#f7f3ee;--paper-2:#ede8e0;--paper-3:#ddd5c8;
+  --cat1:#8b2020;--cat1-lt:#f5e8e8;
+  --cat2:#1a5c38;--cat2-lt:#e6f2ec;
+  --cat3:#1e3a6e;--cat3-lt:#e6ecf5;
+  --gold:#b8860b;--gold-lt:#faf3df;
+  --s1:#991b1b;--s1l:#fff0f0;
+  --s2:#854d0e;--s2l:#fffbeb;
+  --s3:#166534;--s3l:#f0fdf4;
+  --s4:#1e40af;--s4l:#eff6ff;
+  --s5:#5b21b6;--s5l:#f5f3ff;
+  --pisa1:#0f766e;--pisa1l:#f0fdfa;
+  --pisa2:#7c3aed;--pisa2l:#f5f3ff;
+  --pisa3:#be185d;--pisa3l:#fdf2f8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;overflow-x:hidden}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(247,243,238,0.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--paper-3);padding:0.65rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{font-family:'Noto Serif TC',serif;font-size:0.88rem;font-weight:700;color:var(--ink);text-decoration:none}
+.nav-right{display:flex;align-items:center;gap:0.75rem}
+.nav-home{font-size:0.75rem;color:var(--ink-lt);text-decoration:none;padding:0.3rem 0.7rem;border:1px solid var(--paper-3);border-radius:3px}
+.nav-home:hover{border-color:var(--ink-lt)}
+
+/* HERO */
+.hero{padding:3rem 1.5rem 2rem;text-align:center;position:relative}
+.hero-badge{display:inline-block;font-size:0.65rem;letter-spacing:0.18em;color:var(--cat1);border:1px solid var(--cat1);padding:0.25rem 0.8rem;border-radius:2px;margin-bottom:1rem;text-transform:uppercase}
+.hero h1{font-family:'Noto Serif TC',serif;font-size:clamp(1.6rem,5vw,2.4rem);font-weight:700;line-height:1.25;margin-bottom:0.6rem}
+.hero h1 em{font-style:italic;font-family:'DM Serif Display',serif;color:var(--cat1)}
+.hero-desc{font-size:0.88rem;color:var(--ink-lt);max-width:480px;margin:0 auto 1.5rem;font-weight:300}
+
+/* META ROW */
+.meta-bar{background:white;border:1px solid var(--paper-3);border-radius:6px;padding:0.75rem 1rem;display:flex;gap:0.6rem;flex-wrap:wrap;max-width:680px;margin:0 auto 1.5rem}
+.meta-bar input{flex:1;min-width:80px;font-size:0.8rem;padding:0.4rem 0.6rem;border:1px solid var(--paper-3);border-radius:4px;background:var(--paper);color:var(--ink);font-family:'Noto Sans TC',sans-serif}
+
+/* LESSON PICKER */
+.picker-wrap{max-width:780px;margin:0 auto 2rem;padding:0 1.5rem}
+.picker-label{font-size:0.7rem;letter-spacing:0.12em;color:var(--ink-lt);margin-bottom:0.6rem}
+.picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.4rem}
+.pb{padding:0.5rem 0.7rem;border-radius:4px;border:1px solid var(--paper-3);font-size:0.75rem;cursor:pointer;background:white;color:var(--ink-mid);text-align:left;line-height:1.3;transition:all .15s}
+.pb:hover{border-color:var(--ink-lt)}
+.pb.active{border-color:#378ADD;background:#E6F1FB;color:#0C447C}
+.pb.done{border-color:#639922;background:#EAF3DE;color:#3B6D11}
+.cat-tag{display:block;font-size:0.6rem;font-weight:500;margin-bottom:2px}
+.ct1{color:var(--cat1)}.ct2{color:var(--cat2)}.ct3{color:var(--cat3)}
+
+/* MAIN CONTENT */
+.main{max-width:780px;margin:0 auto;padding:0 1.5rem 4rem}
+
+/* PISA PHASE TABS */
+.phase-nav{display:flex;gap:0.4rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.phase-btn{padding:0.4rem 1rem;border-radius:4px;border:1px solid var(--paper-3);font-size:0.75rem;cursor:pointer;background:white;color:var(--ink-lt);transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+.phase-btn:hover{border-color:var(--ink-lt);color:var(--ink)}
+.phase-btn.p1.on{background:var(--pisa1l);color:var(--pisa1);border-color:var(--pisa1)}
+.phase-btn.p2.on{background:var(--pisa2l);color:var(--pisa2);border-color:var(--pisa2)}
+.phase-btn.p3.on{background:var(--pisa3l);color:var(--pisa3);border-color:var(--pisa3)}
+
+/* PROGRESS */
+.prog-wrap{margin-bottom:1rem}
+.prog-row{display:flex;justify-content:space-between;font-size:0.72rem;color:var(--ink-lt);margin-bottom:0.3rem}
+.prog-bar{height:4px;background:var(--paper-3);border-radius:2px;overflow:hidden}
+.prog-fill{height:100%;border-radius:2px;background:#378ADD;transition:width .4s}
+
+/* STEP DOTS */
+.dots{display:flex;gap:0.4rem;margin-bottom:1rem}
+.dot{width:28px;height:28px;border-radius:50%;border:1px solid var(--paper-3);font-size:0.7rem;font-weight:500;cursor:pointer;background:white;color:var(--ink-lt);display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.dot.done-d{background:#EAF3DE;color:#3B6D11;border-color:#97C459}
+
+/* SOURCE BOX */
+.src-box{background:white;border:1px solid var(--paper-3);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1rem;cursor:pointer}
+.src-hd{display:flex;justify-content:space-between;font-size:0.7rem;color:var(--ink-lt);font-weight:500;margin-bottom:0.4rem}
+.src-text{font-family:'Noto Serif TC',serif;font-size:0.95rem;line-height:2;color:var(--ink)}
+.src-text.hide{display:none}
+
+/* PHASE SECTIONS */
+.phase-section{display:none}
+.phase-section.on{display:block}
+
+/* PISA HEADER */
+.pisa-head{border-radius:6px;padding:0.75rem 1rem;margin-bottom:1rem;border:1px solid}
+.pisa-head.p1{background:var(--pisa1l);border-color:#99f6e4;color:var(--pisa1)}
+.pisa-head.p2{background:var(--pisa2l);border-color:#ddd6fe;color:var(--pisa2)}
+.pisa-head.p3{background:var(--pisa3l);border-color:#fbcfe8;color:var(--pisa3)}
+.pisa-head h3{font-size:0.85rem;font-weight:500;margin-bottom:0.2rem}
+.pisa-head p{font-size:0.72rem;opacity:0.8;line-height:1.4}
+
+/* CARDS */
+.card{background:white;border:1px solid var(--paper-3);border-radius:8px;overflow:hidden;margin-bottom:0.75rem}
+.card-hd{display:flex;align-items:center;gap:0.75rem;padding:0.65rem 1rem}
+.nc{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:500;color:white;flex-shrink:0}
+.ct{font-size:0.88rem;font-weight:500;color:var(--ink)}
+.cs{font-size:0.7rem;color:var(--ink-lt)}
+.card-b{padding:0.75rem 1rem;border-top:1px solid var(--paper-3)}
+.tip{border-left:2px solid var(--paper-3);padding:0.35rem 0.6rem;font-size:0.75rem;color:var(--ink-lt);margin-bottom:0.5rem;line-height:1.5}
+.scaf{border:1px dashed var(--paper-3);border-radius:4px;padding:0.4rem 0.65rem;font-size:0.72rem;color:var(--ink-lt);margin-bottom:0.5rem;display:none;line-height:1.5}
+.scaf.on{display:block}
+
+/* TABLES */
+.tbl{width:100%;border-collapse:collapse;margin-bottom:0.4rem}
+.tbl td{padding:4px 6px;border:1px solid var(--paper-3);font-size:0.82rem;vertical-align:top}
+.tbl .og{background:var(--paper);color:var(--ink);width:44%}
+.tbl textarea{width:100%;border:none;background:transparent;font-size:0.82rem;font-family:'Noto Sans TC',sans-serif;color:var(--ink);resize:none;min-height:38px;outline:none;padding:1px;line-height:1.5}
+.gtbl{width:100%;border-collapse:collapse;margin-bottom:0.5rem}
+.gtbl td{padding:4px 7px;border-bottom:1px solid var(--paper-3);font-size:0.78rem;vertical-align:top}
+.gw{font-weight:500;color:var(--ink);width:28%}
+.gm{color:var(--ink-lt)}
+.mw{border:1px solid var(--paper-3);border-radius:4px;padding:4px 7px;min-height:30px;display:flex;flex-wrap:wrap;align-items:center;gap:3px;cursor:text}
+.wb{display:inline-flex;align-items:center;gap:2px;background:#E6F1FB;color:#0C447C;border-radius:3px;padding:1px 6px;font-size:0.7rem}
+.wb span{cursor:pointer;opacity:.5}
+.wi{border:none;background:none;outline:none;font-size:0.72rem;color:var(--ink);min-width:55px;font-family:'Noto Sans TC',sans-serif}
+.ta{width:100%;border:1px solid var(--paper-3);border-radius:4px;padding:0.5rem 0.7rem;font-size:0.82rem;font-family:'Noto Sans TC',sans-serif;color:var(--ink);background:white;resize:vertical;min-height:80px;line-height:1.7}
+.ta:focus{outline:none;border-color:var(--ink-lt)}
+.ta-sm{min-height:50px}
+
+/* RETRIEVAL PRACTICE */
+.retrieval-box{background:var(--gold-lt);border:1px solid #fde68a;border-radius:6px;padding:0.75rem 1rem;margin-bottom:0.75rem}
+.retrieval-box h4{font-size:0.8rem;font-weight:500;color:var(--gold);margin-bottom:0.4rem;display:flex;align-items:center;gap:0.4rem}
+.retrieval-box p{font-size:0.72rem;color:#78350f;margin-bottom:0.5rem;line-height:1.4}
+
+/* LOCK MECHANISM */
+.lock-overlay{background:var(--paper-2);border:1px dashed var(--paper-3);border-radius:4px;padding:0.75rem 1rem;text-align:center;margin-bottom:0.5rem}
+.lock-overlay p{font-size:0.78rem;color:var(--ink-lt);margin-bottom:0.5rem}
+.lock-check{font-size:0.72rem;color:var(--ink-lt)}
+
+/* BUTTONS */
+.br{display:flex;gap:0.5rem;margin-top:0.65rem;flex-wrap:wrap;align-items:center}
+.btn{padding:0.4rem 1rem;border-radius:4px;border:1px solid var(--paper-3);font-size:0.78rem;cursor:pointer;background:white;color:var(--ink);transition:all .15s;font-family:'Noto Sans TC',sans-serif}
+.btn:hover{background:var(--paper-2)}
+.btn.ok{background:#EAF3DE;color:#27500A;border-color:#97C459}
+.btn.ask{color:var(--ink-lt);font-size:0.7rem;opacity:0.6;cursor:not-allowed}
+.btn.ask.unlocked{color:var(--ink-lt);opacity:1;cursor:pointer}
+.btn.ask.unlocked:hover{background:var(--paper-2);color:var(--ink)}
+.btn.nxt{background:#E6F1FB;color:#0C447C;border-color:#85B7EB}
+.hint{font-size:0.65rem;color:var(--ink-lt);margin-top:0.3rem}
+
+/* PISA QUESTION CARDS */
+.pq-card{background:white;border:1px solid var(--paper-3);border-radius:6px;padding:0.85rem 1rem;margin-bottom:0.65rem}
+.pq-type{font-size:0.62rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.35rem}
+.pq-q{font-size:0.85rem;color:var(--ink);margin-bottom:0.5rem;line-height:1.5}
+.pq-options{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.5rem}
+.pq-opt{display:flex;align-items:flex-start;gap:0.5rem;padding:0.4rem 0.6rem;border:1px solid var(--paper-3);border-radius:4px;cursor:pointer;font-size:0.8rem;transition:all .15s;background:white}
+.pq-opt:hover{border-color:var(--ink-lt);background:var(--paper)}
+.pq-opt.sel{border-color:#378ADD;background:#E6F1FB;color:#0C447C}
+.pq-opt.correct{border-color:#639922;background:#EAF3DE;color:#27500A}
+.pq-opt.wrong{border-color:#dc2626;background:#fee2e2;color:#991b1b}
+.pq-radio{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--paper-3);flex-shrink:0;margin-top:2px;transition:all .15s}
+.pq-opt.sel .pq-radio,.pq-opt.correct .pq-radio{border-color:currentColor;background:currentColor}
+.pq-explain{font-size:0.72rem;color:var(--ink-lt);border-left:2px solid var(--paper-3);padding:0.3rem 0.5rem;margin-top:0.4rem;display:none;line-height:1.4}
+.pq-explain.show{display:block}
+.check-btn{padding:0.3rem 0.8rem;border-radius:3px;border:1px solid var(--paper-3);font-size:0.72rem;cursor:pointer;background:white;color:var(--ink-mid)}
+.check-btn:hover{background:var(--paper-2)}
+
+/* REFLECT */
+.ref{border:1px solid var(--paper-3);border-radius:8px;padding:0.85rem 1rem;margin-top:0.75rem;background:var(--paper);display:none}
+.ref h3{font-size:0.88rem;font-weight:500;color:var(--ink);margin-bottom:0.6rem}
+.rq{font-size:0.75rem;color:var(--ink-lt);margin-bottom:3px;margin-top:0.5rem}
+.er-row{display:flex;gap:4px;margin-bottom:0.5rem}
+.er{padding:3px 7px;border-radius:3px;border:1px solid var(--paper-3);font-size:0.9rem;cursor:pointer;background:white}
+.er.on{border-color:var(--ink-lt);background:var(--paper-2)}
+
+.no-lesson{text-align:center;padding:3rem 1rem;color:var(--ink-lt);font-size:0.88rem}
+
+@media(max-width:480px){.tbl .og{display:none}.tbl td{width:100%!important}.picker-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">古文探究實作</a>
+  <div class="nav-right">
+    <a class="nav-home" href="index.html">← 首頁</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-badge">Student Practice · 學生練習</div>
+  <h1>古文探究<em>練習</em></h1>
+  <p class="hero-desc">五步拆解 × PISA三層閱讀 × 提取練習<br>學習的主角是你，AI 只給方向不給答案</p>
+  <div class="meta-bar">
+    <input placeholder="姓名" id="nm">
+    <input placeholder="班級" id="cl">
+    <input type="date" id="dt" style="color:var(--ink-lt)">
+  </div>
+</div>
+
+<div class="picker-wrap">
+  <div class="picker-label">選擇篇目 · SELECT LESSON</div>
+  <div class="picker-grid" id="lpGrid"></div>
+</div>
+
+<div class="main" id="mainArea">
+  <div class="no-lesson">← 請先選擇上方的篇目</div>
+</div>
+
+<script>
+var LV=1,CUR=null,DONE={},PHASE=1,STEPIDX=0;
+
+var LESSONS=[
+{id:0,cat:1,catN:'說服',title:'師說',author:'韓愈',
+ src:'古之學者必有師。師者，所以傳道受業解惑也。人非生而知之者，孰能無惑？惑而不從師，其為惑也，終不解矣。生乎吾前，其聞道也固先乎吾，吾從而師之；生乎吾後，其聞道也亦先乎吾，吾從而師之。',
+ predict:'在閱讀原文之前：你認為一篇叫「師說」的文章，作者會說什麼觀點？',
+ recall:'不看原文，用自己的話說出這段文字的主要意思（至少兩個重點）：',
+ gloss:[['學者','求學的人（≠有學問的人）'],['師','老師；以…為師（動詞）'],['所以','用來…（≠因果關係）'],['傳道','傳授道理'],['受業','教授學業（受＝授）'],['惑','疑惑'],['從師','跟從老師'],['聞道','懂得道理']],
+ rows2:[['古之學者必有師。'],['師者，所以傳道受業解惑也。'],['人非生而知之者，孰能無惑？'],['惑而不從師，其為惑也，終不解矣。'],['生乎吾前，吾從而師之。']],
+ rows4:[['古之學者必有師。'],['師者，所以傳道受業解惑也。'],['人非生而知之者，孰能無惑？'],['惑而不從師，其為惑也，終不解矣。'],['生乎吾前，其聞道也固先乎吾，吾從而師之。']],
+ tips:['找「也、矣、者、乎」等語氣詞作切點','主語只有「學者」與「吾」，交替出現','「學者」古義是求學者；「所以」是「用來」','文言語序常「動詞前置」，翻譯時要調回來','連接詞：因此、然而、換言之'],
+ scafs:['已知切點：「必有師。」「解惑也。」「孰能無惑？」「終不解矣。」','主語只有兩個：古之學者和吾（韓愈）','重點詞：學者＝求學者；所以＝用來；受業＝受同授','翻譯公式：主語→代入詞義→調整語序','開頭試試：「韓愈認為，古代求學的人一定有老師……」'],
+ helps:['我在〈師說〉練習斷句，不確定在哪裡切。請給我一個判斷句尾語氣詞的思考方法，不要直接給我切好的版本。','我在補主語，不確定第幾句的主語是誰。請告訴我如何從上下文判斷省略主語，不要直接告訴我答案。','我在查〈師說〉的生字詞。可以教我如何用語境推測文言詞義的方法嗎？','我在翻譯〈師說〉，不知道怎麼處理語序。請給我思考步驟，不要直接翻給我。','我要把翻譯串成一段，不知道如何加連接詞。請給我一個示範開頭讓我接著寫。'],
+ pisa:[
+  {phase:1,type:'擷取訊息',q:'根據原文，老師的功能是哪三項？',opts:['傳道、授業、解惑','說教、教書、答疑','傳統、教業、解問','指導、授業、問答'],ans:0,explain:'原文「師者，所以傳道受業解惑也」直接說明三項功能。'},
+  {phase:1,type:'擷取訊息',q:'「生乎吾前，其聞道也固先乎吾，吾從而師之」中，「固」的意思是？',opts:['固執地','本來就','一定要','堅固地'],ans:1,explain:'「固」在此是副詞，表示「本來就、原本」，不是形容詞的固執或堅固。'},
+  {phase:2,type:'發展解釋',q:'韓愈說「人非生而知之者，孰能無惑？」這句話在論證中的作用是什麼？',opts:['直接說明老師很重要','用反問建立「人必有疑惑」的前提，為「必須從師」鋪路','批評不愛學習的人','描述學習的困難'],ans:1,explain:'這是一個論證步驟：先承認「人必有疑惑」，才能推出「不從師則惑不解」，邏輯是：有惑→需解惑→需要老師。'},
+  {phase:2,type:'發展解釋',q:'文章中「生乎吾前…師之；生乎吾後…師之」這個句式，韓愈想表達什麼核心概念？',opts:['老師一定要比學生年長','任何人只要懂道理都可以是老師','年輕人不應該教年長者','學習要尊重傳統'],ans:1,explain:'韓愈刻意用「前」和「後」的對比，說明從師的標準不是年齡，而是「聞道先後」——懂道理比我早，就值得學習。這正是在「重構定義」。'},
+  {phase:3,type:'省思評鑑',q:'韓愈的「從師」標準是什麼？你認為這個標準放在今天還適用嗎？請說明理由。',opts:null,ans:null,explain:''},
+  {phase:3,type:'省思評鑑',q:'韓愈說「師者，所以傳道受業解惑也」。你認為這三個功能中，哪一個在現代最重要？為什麼？',opts:null,ans:null,explain:''},
+ ]
+},
+{id:1,cat:1,catN:'說服',title:'諫逐客書',author:'李斯',
+ src:'臣聞吏議逐客，竊以為過矣。昔穆公求士，西取由余於戎，東得百里奚於宛，迎蹇叔於宋，來丕豹、公孫支於晉。此五子者，不產於秦，而穆公用之，并國二十，遂霸西戎。',
+ predict:'一封勸阻君王的諫書，作者要如何說服一個已經做出決定的人改變心意？',
+ recall:'不看原文，說出李斯舉了哪些例子？這些例子的共同點是什麼？',
+ gloss:[['臣','李斯自稱'],['吏議','官員的議論'],['逐客','驅逐客卿'],['竊','私下（謙遜語）'],['過','錯誤（名詞）'],['求士','尋訪人才'],['并國二十','兼併二十個國家'],['霸','稱霸']],
+ rows2:[['臣聞吏議逐客，竊以為過矣。'],['昔穆公求士。'],['西取由余於戎，東得百里奚於宛。'],['此五子者，不產於秦，而穆公用之。'],['并國二十，遂霸西戎。']],
+ rows4:[['臣聞吏議逐客，竊以為過矣。'],['昔穆公求士，西取由余於戎，東得百里奚於宛。'],['此五子者，不產於秦，而穆公用之。'],['并國二十，遂霸西戎。']],
+ tips:['找「矣、者、之」等詞作停頓','主語切換：「臣」→「穆公」→「五子」→「穆公」','「竊」是謙遜語；「過」在此是名詞「錯誤」','列舉句型：西……東……→白話可改「一方面……另一方面……」','整段邏輯：舉例說明用外來人才的好處'],
+ scafs:['切點提示：「過矣。」「求士，」「於宛，」「用之，」「西戎。」','主語：前段「臣」，後段換為「穆公」','「竊以為過」＝我私下認為這是錯的','「不產於秦，而穆公用之」是讓步轉折句','開頭：「李斯說，他聽說官員們在討論驅逐客卿……」'],
+ helps:['我在〈諫逐客書〉練習斷句，這篇句子很長，不確定在哪裡停頓。請給我長句斷句的方法提示。','我在補〈諫逐客書〉的主語，這段有好幾個人物出現，不確定誰是主語。請教我如何追蹤段落中的主語切換。','〈諫逐客書〉有些詞我不確定是否和現代意思不同。請給我判斷古今義差異的方法。','我在翻譯〈諫逐客書〉的列舉句，「西取……東得……」這種結構怎麼翻比較自然？','我要把〈諫逐客書〉的翻譯整合成一段，請給我如何保留說服語氣的提示。'],
+ pisa:[
+  {phase:1,type:'擷取訊息',q:'根據原文，秦穆公的五位人才來自哪些地方？',opts:['全部來自晉國','來自戎、宛、宋、晉等不同地方','全部來自秦國本地','來自楚、吳、越、燕'],ans:1,explain:'原文列出：「西取由余於戎，東得百里奚於宛，迎蹇叔於宋，來丕豹、公孫支於晉」——四個不同地方。'},
+  {phase:1,type:'擷取訊息',q:'「竊以為過矣」中「竊」的用法是？',opts:['偷竊的動作','謙遜的語氣副詞，意思是「私下」','表示堅定的語氣','表示懷疑的語氣'],ans:1,explain:'「竊」在此是謙遜語，表示「我私下認為」，古代臣子在君王前自我謙遜的慣用法。'},
+  {phase:2,type:'發展解釋',q:'李斯舉穆公「用外來人才→稱霸」的例子，在說服邏輯上是哪種方式？',opts:['直接命令秦王不要逐客','用歷史成功案例建立「外來人才有用」的前提','批評逐客官員的無能','引用聖人的話來說服'],ans:1,explain:'這是「例證法」的說服策略——用歷史成功案例讓對方自己得出結論，比直接說「你錯了」更有說服力，因為對方難以反駁事實。'},
+  {phase:2,type:'發展解釋',q:'李斯「竊以為過矣」直接表明立場，而不是先鋪墊。這個開場方式的效果是？',opts:['讓秦王覺得被冒犯','開門見山讓君王知道重點，再用例子支撐，邏輯清晰','太過謙遜，反而沒有說服力','模糊焦點讓秦王思考'],ans:1,explain:'這是奏章的修辭策略：先明確表態（「我認為這是錯的」），讓對方知道你的立場，然後再用事實說服。'},
+  {phase:3,type:'省思評鑑',q:'李斯完全從「對秦王有什麼好處」的角度來說服，而不是說「驅逐客卿對這些人不公平」。你認為這個策略的優缺點是什麼？',opts:null,ans:null,explain:''},
+  {phase:3,type:'省思評鑑',q:'如果你是現代人，要說服學校不要取消一個社團，你會模仿李斯的哪個說服策略？',opts:null,ans:null,explain:''},
+ ]
+},
+{id:2,cat:1,catN:'說服',title:'燭之武退秦師',author:'《左傳》',
+ src:'夜縋而出，見秦伯，曰：「秦、晉圍鄭，鄭既知亡矣。若亡鄭而有益於君，敢以煩執事。越國以鄙遠，君知其難也；焉用亡鄭以陪鄰？鄰之厚，君之薄也。」',
+ predict:'一個老人要獨自說服強大的敵國撤兵，他唯一的武器是「話語」。他會說什麼？',
+ recall:'不看原文，說出燭之武說話的邏輯：他說了哪幾個讓秦王不應該攻打鄭國的理由？',
+ gloss:[['縋','用繩子吊下城牆'],['秦伯','秦穆公'],['既','已經'],['若','如果'],['亡鄭','使鄭國滅亡'],['執事','對對方的尊稱（您）'],['越國以鄙遠','越過別國把遠地當邊境'],['陪鄰','增加鄰國土地'],['鄰之厚，君之薄也','鄰國強則你弱']],
+ rows2:[['夜縋而出，見秦伯。'],['秦、晉圍鄭，鄭既知亡矣。'],['若亡鄭而有益於君，敢以煩執事。'],['越國以鄙遠，君知其難也。'],['焉用亡鄭以陪鄰？'],['鄰之厚，君之薄也。']],
+ rows4:[['夜縋而出，見秦伯。'],['秦、晉圍鄭，鄭既知亡矣。'],['若亡鄭而有益於君，敢以煩執事。'],['越國以鄙遠，君知其難也。'],['鄰之厚，君之薄也。']],
+ tips:['找「矣、也、乎」等停頓；引號內是對話','主語：燭之武說話，引號內主語是「秦」「君」','「執事」是對秦伯的尊稱；「焉用」是「何必」','「鄰之厚，君之薄也」是判斷句型','重點：燭之武站在秦的立場說話'],
+ scafs:['整段是燭之武的說話內容，主語常省略（燭之武說）','「若亡鄭有益於君」＝如果滅掉鄭國對您有好處','「焉用亡鄭以陪鄰」＝何必滅鄭來增加鄰國（晉）的土地','判斷句：「X之Y也」→「X的Y就是這樣」','整段邏輯：承認事實→說明滅鄭對秦無益→指出陪晉之害'],
+ helps:['我在〈燭之武退秦師〉練習斷句，引號內的對話怎麼斷？請給我對話體文言文的斷句提示。','對話段落省略了很多主語，請教我如何在對話文字中判斷主語是誰。','「執事」和「焉用」這兩個詞不常見，請給我推測不常見文言詞義的方法。','「鄰之厚，君之薄也」這種句型我不太懂，請給我判斷「之」字用法的方法。','〈燭之武〉是說服性對話，翻譯時怎麼保留「站在對方立場」的語氣？'],
+ pisa:[
+  {phase:1,type:'擷取訊息',q:'燭之武夜晚出城的方式是？',opts:['從城門偷偷走出','從洞裡爬出','用繩子從城牆吊下去','喬裝成商人走出'],ans:2,explain:'原文「夜縋而出」——縋是用繩子懸吊。'},
+  {phase:1,type:'擷取訊息',q:'「鄰之厚，君之薄也」這句話的意思是？',opts:['鄰國的土地厚實，你的土地薄弱','鄰國增強，你就會相對削弱','鄰國的友情厚實，你的友情薄弱','你的土地不如鄰國肥沃'],ans:1,explain:'這是政治邏輯：「厚」「薄」是相對比較詞——鄰國（晉）得到更多，秦的相對優勢就減少了。'},
+  {phase:2,type:'發展解釋',q:'燭之武一開始說「鄭既知亡矣」，這樣開場的用意是？',opts:['表示鄭國已經放棄抵抗','先承認最壞情況，讓秦王降低防禦心，才能切入真正的論點','表示自己很悲觀','向秦王求饒'],ans:1,explain:'這是說服的高級技巧：先「承認對方的強大與自己的弱小」，讓對方放鬆警惕，再從對方的利益切入真正的說服論點。'},
+  {phase:2,type:'發展解釋',q:'「越國以鄙遠，君知其難也」這句話，燭之武是要說服秦王什麼？',opts:['攻打鄭國路途遙遠很辛苦','即使得到鄭國，秦也難以實際管理和享用，所以攻打鄭國對秦沒有實際好處','鄭國的地形很複雜','秦國士兵不夠多'],ans:1,explain:'這是站在秦王利益角度的論證：「你得到鄭，但鄭在晉的另一邊，你根本管不了，得到也無用」——核心是讓秦王看見攻鄭的「實際成本」。'},
+  {phase:3,type:'省思評鑑',q:'燭之武整段說話都是從秦王的利益出發，完全沒有說「攻打鄭國不公平」。你認為這種說服策略有什麼優缺點？',opts:null,ans:null,explain:''},
+  {phase:3,type:'省思評鑑',q:'燭之武找到了「秦晉聯盟的裂縫」（晉得到鄭對秦其實有害）。你能想到現實生活中，什麼情況下也可以用「找出合作方的矛盾」來解決問題？',opts:null,ans:null,explain:''},
+ ]
+},
+{id:3,cat:2,catN:'感受',title:'項脊軒志',author:'歸有光',
+ src:'項脊軒，舊南閣子也。室僅方丈，可容一人居。百年老屋，塵泥滲漉，雨澤下注；每移案，顧視，無可置者。又北向，不能得日，日過午已昏。余稍為修葺，使不上漏。',
+ predict:'一篇描寫自己書房的文章，作者會透過書房說什麼情感？',
+ recall:'不看原文，說出你記得的這個書房的三個具體細節：',
+ gloss:[['項脊軒','書房名'],['方丈','一丈見方（很小）'],['塵泥滲漉','灰塵泥水滲入'],['雨澤下注','雨水從上灌入'],['移案','移動桌子'],['顧視','環顧四周'],['無可置者','沒有地方放'],['北向','朝北'],['修葺','整修房屋'],['上漏','從上漏水']],
+ rows2:[['項脊軒，舊南閣子也。'],['室僅方丈，可容一人居。'],['百年老屋，塵泥滲漉，雨澤下注。'],['每移案，顧視，無可置者。'],['又北向，不能得日，日過午已昏。'],['余稍為修葺，使不上漏。']],
+ rows4:[['項脊軒，舊南閣子也。室僅方丈，可容一人居。'],['百年老屋，塵泥滲漉，雨澤下注。'],['每移案，顧視，無可置者。'],['又北向，不能得日，日過午已昏。'],['余稍為修葺，使不上漏。']],
+ tips:['找「也、者、之」和標點作切點','主語：「（書房）」→「余」（歸有光）'],
+ scafs:['第一句是判斷句：「項脊軒，是以前的南閣子。」','「室僅方丈」＝房間只有一丈見方那麼大','「每移案，顧視，無可置者」＝每次移桌子，環顧四周，沒有地方放','「北向不能得日」＝朝北所以照不到陽光','注意：這段是寫房間的破舊，為後來的情感做鋪墊'],
+ helps:['〈項脊軒志〉有些句子是短句疊加，請給我疊加短句的斷句方法。','這段有「余」和省略主語的房間描述交錯，請告訴我如何判斷描述的主語是人還是地方。','「方丈」在這裡的意思和現代不同，請給我分辨同形異義詞的方法。','「使不上漏」這種「使」字句型要怎麼翻譯成白話？','這段是空間描寫，翻譯時如何保留「破舊但有情感」的文字質感？'],
+ pisa:[
+  {phase:1,type:'擷取訊息',q:'根據原文，項脊軒有哪些「缺點」？（選出描述的所有缺點）',opts:['太小、漏水、朝北光線不足','太舊、太貴、太遠','沒有書桌、沒有窗戶、沒有床','太熱、太暗、太吵'],ans:0,explain:'原文描述：方丈之小（太小）、塵泥滲漉雨澤下注（漏水）、北向不能得日昏（朝北光線差）。'},
+  {phase:1,type:'擷取訊息',q:'「余稍為修葺，使不上漏」說明歸有光做了什麼？',opts:['把房子完全重建','稍微整修讓它不再從上面漏水','請工匠大規模翻修','把房子賣掉換新的'],ans:1,explain:'「稍為修葺」是「稍微整修」，不是大規模重建；「使不上漏」是目的——讓它不再漏水。'},
+  {phase:2,type:'發展解釋',q:'歸有光花大篇幅描寫書房的破舊，卻仍然選擇在這裡讀書。這段描寫想傳達什麼？',opts:['抱怨家境貧窮很可憐','透過破舊的環境反襯出讀書志向的堅定和對這個空間的深厚情感','純粹是客觀描寫房子的狀況','說明古代房子都很破舊'],ans:1,explain:'以物寄情的技法：不直接說「我熱愛讀書」或「我很貧窮但堅強」，而是讓讀者透過破舊的細節自己感受到那種情感——這比直接陳述更有感染力。'},
+  {phase:2,type:'發展解釋',q:'「每移案，顧視，無可置者」這個細節有什麼效果？',opts:['說明書桌太重','具體呈現書房小到移個桌子都找不到地方放，讓讀者感受到空間的侷促','說明歸有光有整理癖','說明書房裡東西太多'],ans:1,explain:'這是「show, don\'t tell」（展示而非陳述）的寫法：不說「房間很小」，而是用一個具體動作（移桌子→環顧→沒地方放）讓讀者自己感受空間的逼仄。'},
+  {phase:3,type:'省思評鑑',q:'歸有光選擇用「移桌子找不到地方放」「下雨漏水」這些細節，而不是說「我的書房很破舊」。你認為這種寫法為什麼比直接陳述更有力量？試著用一個你自己的例子說明。',opts:null,ans:null,explain:''},
+  {phase:3,type:'省思評鑑',q:'你生活中有沒有一個「很破舊但對你很重要」的地方或物品？試著模仿歸有光的方式，用具體細節描述它（禁止使用「我很喜歡它」這句話）。',opts:null,ans:null,explain:''},
+ ]
+},
+{id:4,cat:3,catN:'判讀',title:'鴻門宴',author:'司馬遷',
+ src:'沛公旦日從百餘騎來見項王，至鴻門，謝曰：「臣與將軍戮力而攻秦，將軍戰河北，臣戰河南，然不自意能先入關破秦，得復見將軍於此。」項王曰：「此沛公左司馬曹無傷言之；不然，籍何以至此？」',
+ predict:'鴻門宴是一場充滿危機的飯局。你認為劉邦去見項羽時，他心裡在想什麼？',
+ recall:'不看原文，說出這段對話中：劉邦說了什麼？項羽說了什麼？',
+ gloss:[['旦日','第二天'],['從百餘騎','帶著一百多騎兵'],['謝','道歉謝罪（≠感謝）'],['戮力','合力'],['不自意','沒料到'],['先入關','比別人早進入函谷關'],['左司馬','官職名'],['言之','說了這件事'],['籍','項羽的名（自稱）'],['何以至此','怎麼到這個地步']],
+ rows2:[['沛公旦日從百餘騎來見項王，至鴻門。'],['謝曰：「臣與將軍戮力而攻秦……」'],['將軍戰河北，臣戰河南。'],['然不自意能先入關破秦，得復見將軍於此。'],['項王曰：「此沛公左司馬曹無傷言之。」'],['不然，籍何以至此？']],
+ rows4:[['沛公旦日從百餘騎來見項王，至鴻門，謝曰。'],['臣與將軍戮力而攻秦，將軍戰河北，臣戰河南。'],['然不自意能先入關破秦，得復見將軍於此。'],['此沛公左司馬曹無傷言之；不然，籍何以至此？']],
+ tips:['對話體：「曰：」後是說話內容，引號前後是敘事','主語：沛公→（沛公說）→項王→（項王說）','「謝」在此是道歉謝罪；「籍」是項羽的名','「不自意」＝沒料到自己；「何以至此」＝怎麼到這地步','潛台詞是重點：劉邦的道歉是真的嗎？'],
+ scafs:['「旦日從百餘騎」＝第二天帶著一百多騎兵','「謝」在這裡是謝罪道歉，不是感謝','劉邦說話的潛台詞：我沒想到會先到，我也沒有不臣之心','項羽說出曹無傷的名字：洩露了情報（後來曹無傷被殺）','「不然，籍何以至此」＝如果不是曹無傷說，我怎麼會到這步？'],
+ helps:['〈鴻門宴〉是對話體，敘事和說話交錯，請給我快速識別「誰在說話」的方法。','「謝」這個字在此是謝罪，不是感謝，請給我在上下文中判斷「謝」古義的方法。','項羽直接說出曹無傷，請給我分析文言對話中「言外之意」的方法。','「不然，籍何以至此」這句話的潛台詞是什麼？請給我分析的提示。','〈鴻門宴〉表面禮貌暗流洶湧，翻譯時如何保留雙層語氣？'],
+ pisa:[
+  {phase:1,type:'擷取訊息',q:'劉邦去見項羽時，帶了多少隨從？',opts:['只有自己一個人','五十騎','一百多騎','一千人的軍隊'],ans:2,explain:'原文「從百餘騎」——百餘即一百多。'},
+  {phase:1,type:'擷取訊息',q:'根據項羽的話，是誰告訴他劉邦先入關的事？',opts:['范增','張良','曹無傷','樊噲'],ans:2,explain:'項羽說「此沛公左司馬曹無傷言之」——曹無傷是劉邦的左司馬（官職），卻去向項羽告密。'},
+  {phase:2,type:'發展解釋',q:'劉邦說「不自意能先入關破秦」（我沒料到自己會先進入函谷關），這句話的潛台詞是？',opts:['我真的很驚訝自己這麼厲害','我沒有計劃要比你先到，暗示我沒有稱王的野心','我在路上遇到了困難','我比項羽聰明'],ans:1,explain:'這是高明的政治語言：明說「沒料到」＝暗說「我沒有企圖心」。在項羽懷疑劉邦稱王野心的緊張時刻，這句話是在消除項羽的疑慮。'},
+  {phase:2,type:'發展解釋',q:'項羽直接說出曹無傷的名字，這個舉動在政治上有什麼後果？',opts:['項羽在表揚曹無傷的忠心','項羽洩露了情報，曹無傷的身份暴露，之後被劉邦處決','項羽是在警告劉邦','這只是日常對話，沒有特別含義'],ans:1,explain:'這是項羽的政治失誤：告訴劉邦「是曹無傷告密的」等於把線人的身份暴露給仇人。正史記載劉邦回去後就殺了曹無傷。這顯示項羽缺乏政治敏感度。'},
+  {phase:3,type:'省思評鑑',q:'劉邦在一個隨時可能被殺的場合說話，他的每一句話都是精心設計的。你認為這種「說話能救命」的能力，在現代社會中還重要嗎？請舉一個你能想到的例子。',opts:null,ans:null,explain:''},
+  {phase:3,type:'省思評鑑',q:'項羽洩露了曹無傷的身份，顯示他的政治判斷力不足。你認為「說話時不小心透露太多」這個問題在現代生活中有哪些例子？',opts:null,ans:null,explain:''},
+ ]
+},
+{id:5,cat:3,catN:'判讀',title:'赤壁賦',author:'蘇軾',
+ src:'蘇子曰：「客亦知夫水與月乎？逝者如斯，而未嘗往也；盈虛者如彼，而卒莫消長也。蓋將自其變者而觀之，則天地曾不能以一瞬；自其不變者而觀之，則物與我皆無盡也，而又何羨乎？」',
+ predict:'蘇軾在政治失意時寫的文章，他用「水」和「月」來說什麼人生道理？',
+ recall:'不看原文，說出蘇軾的核心論點：從「變」的角度看是什麼？從「不變」的角度看是什麼？',
+ gloss:[['蘇子','蘇軾自稱'],['逝者如斯','流去的就像這水'],['未嘗往','不曾真正流走'],['盈虛者如彼','有圓有缺的就像月亮'],['卒莫消長','始終不曾增減'],['蓋','發語詞（不翻）'],['自其變者而觀之','從它會變的角度看'],['曾不能以一瞬','連一瞬間都不能停'],['無盡','無窮盡'],['何羨乎','何必羨慕']],
+ rows2:[['客亦知夫水與月乎？'],['逝者如斯，而未嘗往也。'],['盈虛者如彼，而卒莫消長也。'],['自其變者而觀之，則天地曾不能以一瞬。'],['自其不變者而觀之，則物與我皆無盡也。'],['而又何羨乎？']],
+ rows4:[['客亦知夫水與月乎？'],['逝者如斯，而未嘗往也；盈虛者如彼，而卒莫消長也。'],['自其變者而觀之，則天地曾不能以一瞬。'],['自其不變者而觀之，則物與我皆無盡也，而又何羨乎？']],
+ tips:['找「也、乎、矣」和「而」（轉折）作切點','主語：蘇子（說話）→（省略主語的哲理陳述）','「蓋」是發語詞，不翻；「曾」在此是「竟然、連」','「自其…者而觀之，則…」是重要句型','這段是哲學辯證：同一件事，從不同角度看，得出不同結論'],
+ scafs:['「逝者如斯，而未嘗往也」：水流走了，但水本身還在','「盈虛者如彼，而卒莫消長也」：月有圓缺，但月亮本身沒有增減','兩組對比：變的角度→天地一瞬；不變的角度→物我無盡','「何羨乎」＝有什麼好羨慕的呢？（反問，表示釋懷）','核心邏輯：如果萬物本質上是不變的，那得失就不那麼重要了'],
+ helps:['〈赤壁賦〉句子很長且有哲學推論結構，請給我「推論型長句」的斷句方法。','「自其變者而觀之，則…；自其不變者而觀之，則…」這個句型是什麼結構？','「曾不能以一瞬」的「曾」不是「曾經」，請給我判斷虛詞「曾」意思的方法。','這段的哲學對比（變/不變）翻譯時如何讓邏輯清晰呈現？','蘇軾說「而又何羨乎」，這是真的釋懷還是自我說服？翻譯時如何呈現這個層次？'],
+ pisa:[
+  {phase:1,type:'擷取訊息',q:'蘇軾用來比喻「看似消逝卻本質不變」的兩個自然景物是？',opts:['山與海','水與月','風與雲','日與星'],ans:1,explain:'原文「客亦知夫水與月乎」——水（逝者如斯，但水還在）和月（有圓缺，但月不增減）。'},
+  {phase:1,type:'擷取訊息',q:'「自其不變者而觀之，則物與我皆無盡也」的意思是？',opts:['萬物都是有限的','從不變的角度看，萬物和我都是無窮盡的','我比萬物都更長壽','萬物都在變化，只有我不變'],ans:1,explain:'這是蘇軾的哲學論點：如果從「本質不變」的角度看，水的「水性」、月的「月性」都永遠存在，我的存在也是宇宙的一部分而永不消失。'},
+  {phase:2,type:'發展解釋',q:'蘇軾說水「逝者如斯，而未嘗往也」，這個說法和日常觀念有什麼不同？',opts:['蘇軾認為水不會流動','蘇軾區分了「表象的流逝」和「本質的不滅」——水看起來流走了，但「水」這個東西一直存在','蘇軾認為水是永生的','蘇軾在描述河流'],ans:1,explain:'這是哲學思辨的核心：表象（特定的那一瓢水）在流走，但本質（水這種存在）從未消失。把「個別的變化」和「整體的恒常」分開思考。'},
+  {phase:2,type:'發展解釋',q:'蘇軾說「而又何羨乎？」（又何必羨慕/感嘆呢），他真正想說服誰？',opts:['說服客人放下感嘆','說服自己接受政治失意，透過哲學思辨找到內心平靜','說服讀者宇宙很偉大','說服君王重新任用他'],ans:1,explain:'蘇軾當時正值政治被貶的低谷，這場「說服」其實是自我療癒的過程——用哲學說服自己：失去的並非真正失去。這也讓文章有雙層意義：表面在論宇宙，實際在處理失意。'},
+  {phase:3,type:'省思評鑑',q:'蘇軾用「變與不變」的哲學說服自己接受失去。你認為這是真正的想開了，還是一種安慰自己的方式？兩者有沒有區別？',opts:null,ans:null,explain:''},
+  {phase:3,type:'省思評鑑',q:'你曾經因為失去一件事或一個人而難過嗎？如果用蘇軾的「不變角度」來思考，你會怎麼說服自己？（這個問題沒有標準答案）',opts:null,ans:null,explain:''},
+ ]
+}
+];
+
+// additional lessons shorthand
+var EXTRA=[
+ {id:6,cat:1,catN:'說服',title:'出師表',author:'諸葛亮'},
+ {id:7,cat:1,catN:'說服',title:'勸和論',author:''},
+ {id:8,cat:2,catN:'感受',title:'晚遊六橋待月記',author:'袁宏道'},
+ {id:9,cat:2,catN:'感受',title:'虯髯客傳',author:''},
+ {id:10,cat:2,catN:'感受',title:'勞山道士',author:'蒲松齡'},
+ {id:11,cat:2,catN:'感受',title:'桃花源記',author:'陶淵明'},
+ {id:12,cat:3,catN:'判讀',title:'大同與小康',author:'《禮記》'},
+ {id:13,cat:3,catN:'判讀',title:'鹿港乘桴記',author:''},
+ {id:14,cat:3,catN:'判讀',title:'畫菊自序',author:''},
+];
+
+var SNAMES=['斷句切段','補主語','標生字詞','逐句白話','整段潤飾'];
+var STASK=['在可以停頓的地方加「/」切開短句','在每個短句前補上省略的主語','對照注釋理解詞義，圈出其他生字','一句一句翻成現代語（通順就好）','把所有翻譯串成一段流暢的白話文'];
+
+function getLessonById(id){return LESSONS.find(function(l){return l.id===id;})||null;}
+function getExtraById(id){return EXTRA.find(function(e){return e.id===id;})||null;}
+
+function buildPicker(){
+  var g=document.getElementById('lpGrid');
+  g.innerHTML='';
+  LESSONS.concat(EXTRA).forEach(function(l){
+    var b=document.createElement('button');
+    var isExtra=!getLessonById(l.id);
+    b.className='pb'+(CUR&&CUR.id===l.id?' active':'')+(DONE[l.id]?' done':'');
+    var catC=['','ct1','ct2','ct3'][l.cat];
+    b.innerHTML='<span class="cat-tag '+catC+'">'+l.catN+'</span>〈'+l.title+'〉'+(isExtra?'<br><span style="font-size:0.6rem;color:var(--ink-lt)">即將開放</span>':'');
+    if(isExtra){b.style.opacity='0.5';b.style.cursor='default';}
+    else b.onclick=(function(lesson){return function(){selectLesson(lesson)}})(l);
+    g.appendChild(b);
+  });
+}
+
+function selectLesson(l){
+  CUR=l; STEPIDX=0; PHASE=1;
+  if(!DONE[l.id]) DONE[l.id]={steps:[false,false,false,false,false],pisa:{}};
+  buildPicker();
+  renderMain();
+}
+
+function renderMain(){
+  if(!CUR){document.getElementById('mainArea').innerHTML='<div class="no-lesson">← 請先選擇上方的篇目</div>';return;}
+  var l=CUR;
+  var d=DONE[l.id];
+  var done5=d.steps.filter(Boolean).length;
+  var pisaDone=Object.keys(d.pisa).length;
+  var total=(l.pisa?l.pisa.filter(function(q){return q.opts;}).length:0)+5;
+  var totalDone=done5+Object.keys(d.pisa).filter(function(k){return d.pisa[k]&&d.pisa[k].answered;}).length;
+  var pct=total>0?Math.round(totalDone/total*100):0;
+
+  var html='';
+
+  // progress
+  html+='<div class="prog-wrap"><div class="prog-row"><span>〈'+l.title+'〉'+l.author+'</span><span>'+totalDone+'/'+total+' · '+pct+'%</span></div><div class="prog-bar"><div class="prog-fill" id="pf" style="width:'+pct+'%"></div></div></div>';
+
+  // phase tabs
+  html+='<div class="phase-nav">';
+  html+='<button class="phase-btn p1'+(PHASE===1?' on':'')+'\" onclick="setPhase(1)">【第一層】擷取訊息</button>';
+  html+='<button class="phase-btn p2'+(PHASE===2?' on':'')+'\" onclick="setPhase(2)">【第二層】發展解釋</button>';
+  html+='<button class="phase-btn p3'+(PHASE===3?' on':'')+'\" onclick="setPhase(3)">【第三層】省思評鑑</button>';
+  html+='<button class="phase-btn'+(PHASE===0?' on':'')+'\" onclick="setPhase(0)">五步翻譯練習</button>';
+  html+='</div>';
+
+  // source
+  html+='<div class="src-box" onclick="toggleSrc(this)"><div class="src-hd"><span>〈'+l.title+'〉原文段落</span><span id="stg">▼ 收合</span></div><div class="src-text" id="sb">'+l.src+'</div></div>';
+
+  // PHASE 1: 擷取訊息
+  html+='<div class="phase-section'+(PHASE===1?' on':'')+'\">';
+  html+='<div class="retrieval-box"><h4>⚡ 提取練習：先想再讀</h4><p>在開始答題之前，請先花30秒：不看原文，說出你記得的這段文字的主要內容。</p>';
+  html+='<textarea class="ta ta-sm" id="recall1" placeholder="'+l.recall+'"></textarea></div>';
+  var p1qs=(l.pisa||[]).filter(function(q){return q.phase===1;});
+  p1qs.forEach(function(q,qi){html+=renderPisaQ(q,qi,1);});
+  html+='<div class="br"><button class="btn ok" onclick="setPhase(2)">進入第二層：發展解釋 →</button></div>';
+  html+='</div>';
+
+  // PHASE 2: 發展解釋
+  html+='<div class="phase-section'+(PHASE===2?' on':'')+'\">';
+  html+='<div class="pisa-head p2"><h3>第二層｜發展解釋</h3><p>這一層需要你自己推論，從文字的表面意義走向作者的深層意圖。AI 卡關提示在這一層會更保守。</p></div>';
+  var p2qs=(l.pisa||[]).filter(function(q){return q.phase===2;});
+  p2qs.forEach(function(q,qi){html+=renderPisaQ(q,qi,2);});
+  html+='<div class="br"><button class="btn ok" onclick="setPhase(3)">進入第三層：省思評鑑 →</button></div>';
+  html+='</div>';
+
+  // PHASE 3: 省思評鑑
+  html+='<div class="phase-section'+(PHASE===3?' on':'')+'\">';
+  html+='<div class="pisa-head p3"><h3>第三層｜省思評鑑</h3><p>這一層完全是你的聲音。沒有標準答案，但需要有你的立場、你的理由、你的例子。AI 在這一層不提供任何提示。</p></div>';
+  var p3qs=(l.pisa||[]).filter(function(q){return q.phase===3;});
+  p3qs.forEach(function(q,qi){html+=renderPisaQ(q,qi,3);});
+  html+='<div class="br"><button class="btn ok" onclick="setPhase(0)">前往五步翻譯練習 →</button></div>';
+  html+='</div>';
+
+  // PHASE 0: 五步翻譯
+  html+='<div class="phase-section'+(PHASE===0?' on':'')+'\">';
+  html+='<div class="retrieval-box"><h4>⚡ 翻譯前：先預測</h4><p>在開始翻譯之前，不看注釋，先用你對文字的第一印象，猜猜看整段的大意是什麼。</p>';
+  html+='<textarea class="ta ta-sm" id="predict0" placeholder="'+l.predict+'"></textarea></div>';
+  // step dots
+  html+='<div class="dots" id="dots">';
+  for(var i=0;i<5;i++){
+    var isDone=d.steps[i];
+    var isAct=i===STEPIDX;
+    var dc=['#991b1b','#854d0e','#166534','#1e40af','#5b21b6'][i];
+    html+='<div class="dot'+(isDone?' done-d':'')+'" style="'+(isAct&&!isDone?'background:'+dc+';color:white;border-color:'+dc:'')+(isDone?'background:#EAF3DE;color:#3B6D11;border-color:#97C459':'')+'" onclick="goSt('+i+')">'+(isDone?'✓':(i+1))+'</div>';
+  }
+  html+='</div>';
+  html+=renderStep(l,STEPIDX);
+  html+='</div>';
+
+  // reflect
+  if(totalDone===total){
+    html+='<div class="ref" style="display:block"><h3>完成了！給自己一個回饋</h3>';
+    html+='<div class="rq">今天的感受</div><div class="er-row"><button class="er" onclick="pickEr(this)">😰</button><button class="er" onclick="pickEr(this)">😅</button><button class="er" onclick="pickEr(this)">🙂</button><button class="er" onclick="pickEr(this)">😄</button><button class="er" onclick="pickEr(this)">🌟</button></div>';
+    html+='<div class="rq">這篇我學到的最重要一件事：</div><textarea class="ta ta-sm" placeholder="用一句話說…"></textarea>';
+    html+='<div class="rq">下次我想挑戰：</div><textarea class="ta ta-sm" placeholder="例如：挑戰版、找更多生字…"></textarea>';
+    html+='<div class="br"><button class="btn nxt" onclick="sendPrompt(\'我完成了〈'+l.title+'〉的完整練習（五步翻譯＋PISA三層閱讀）。可以幫我確認翻譯和第二層解釋題的推論有沒有問題？\')">請 AI 確認我的推論 ↗</button></div></div>';
+  }
+
+  document.getElementById('mainArea').innerHTML=html;
+}
+
+function renderPisaQ(q,qi,phase){
+  var colors={1:['var(--pisa1)','var(--pisa1l)'],2:['var(--pisa2)','var(--pisa2l)'],3:['var(--pisa3)','var(--pisa3l)']};
+  var c=colors[phase];
+  var key='p'+phase+'_'+qi;
+  var saved=DONE[CUR.id]&&DONE[CUR.id].pisa[key];
+  var html='<div class="pq-card">';
+  html+='<div class="pq-type" style="color:'+c[0]+'">'+q.type+'</div>';
+  html+='<div class="pq-q">'+q.q+'</div>';
+
+  if(q.opts){
+    html+='<div class="pq-options">';
+    q.opts.forEach(function(opt,oi){
+      var cls='pq-opt';
+      if(saved&&saved.answered){
+        if(oi===q.ans) cls+=' correct';
+        else if(oi===saved.sel&&saved.sel!==q.ans) cls+=' wrong';
+      } else if(saved&&saved.sel===oi) cls+=' sel';
+      html+='<div class="'+cls+'" onclick="selectOpt(\''+key+'\','+oi+','+q.ans+')">';
+      html+='<div class="pq-radio"></div><span>'+opt+'</span></div>';
+    });
+    html+='</div>';
+    if(!saved||!saved.answered){
+      html+='<button class="check-btn" onclick="checkOpt(\''+key+'\','+q.ans+')">確認答案</button>';
+    }
+    if(q.explain&&saved&&saved.answered){
+      html+='<div class="pq-explain show">💡 '+q.explain+'</div>';
+    }
+    if(phase<=2){
+      var unlocked=saved&&saved.sel!==undefined;
+      html+='<div class="br"><button class="btn ask'+(unlocked?' unlocked':'')+'" onclick="'+(unlocked?'askPisa(\''+q.type+'\',\''+q.q.replace(/'/g,"\\'")+'\')':"''")+'">'+(unlocked?'不確定？請 AI 解釋推論方法 ↗':'先選一個答案，才能請 AI 提示')+'</button></div>';
+    }
+  } else {
+    // open-ended for phase 3
+    html+='<textarea class="ta" placeholder="寫下你的想法（這裡沒有標準答案，但需要有你的立場和理由）" oninput="saveOpenQ(\''+key+'\',this.value)"></textarea>';
+    html+='<div style="font-size:0.65rem;color:var(--ink-lt);margin-top:0.3rem">第三層問題不提供 AI 提示，因為這裡需要的是你的聲音。</div>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function renderStep(l,si){
+  var dark=['#991b1b','#854d0e','#166534','#1e40af','#5b21b6'][si];
+  var light=['#fff0f0','#fffbeb','#f0fdf4','#eff6ff','#f5f3ff'][si];
+  var tip=l.tips&&l.tips[si]?l.tips[si]:'找找這個步驟的關鍵線索';
+  var scaf=l.scafs&&l.scafs[si]?l.scafs[si]:'先試試看再點這裡';
+  var d=DONE[CUR.id];
+  var userDone=d&&d.steps[si];
+
+  var body='<div class="card"><div class="card-hd" style="background:'+light+'"><div class="nc" style="background:'+dark+'">'+(si+1)+'</div><div><div class="ct">'+SNAMES[si]+'</div><div class="cs">'+STASK[si]+'</div></div></div><div class="card-b">';
+  body+='<div class="tip">'+tip+'</div>';
+  body+='<div class="scaf" id="scaf'+si+'">'+scaf+'</div>';
+
+  // LOCK: must write something before unlock
+  var lockId='lock_'+si;
+  var inputId='inp_'+si;
+
+  if(si===0||si===4){
+    var ph=si===0?'把原文複製到這裡，在停頓處加「/」\n例：古之學者必有師 / 師者，所以傳道受業解惑也 / …':'把所有翻譯句整理成一段，加入連接詞讓語氣通順…';
+    body+='<textarea class="ta" id="'+inputId+'" placeholder="'+ph+'" oninput="onInput('+si+',this.value)"></textarea>';
+  } else if(si===1){
+    body+='<table class="tbl"><tr><td class="og" style="font-size:0.7rem;color:var(--ink-lt)">原文短句</td><td style="font-size:0.7rem;color:var(--ink-lt)">補入主語後</td></tr>';
+    (l.rows2||[]).forEach(function(row,ri){
+      body+='<tr><td class="og">'+row[0]+'</td><td><textarea placeholder="（　　）'+row[0]+'" oninput="onInput('+si+',\'x\')"></textarea></td></tr>';
+    });
+    body+='</table>';
+  } else if(si===2){
+    body+='<table class="gtbl"><tr><td class="gw" style="font-size:0.7rem;color:var(--ink-lt)">字詞</td><td class="gm" style="font-size:0.7rem;color:var(--ink-lt)">注釋</td></tr>';
+    (l.gloss||[]).forEach(function(g){
+      body+='<tr><td class="gw">'+g[0]+'</td><td class="gm">'+g[1]+'</td></tr>';
+    });
+    body+='</table>';
+    body+='<div style="font-size:0.72rem;color:var(--ink-lt);margin-bottom:3px">我自己圈的字（輸入後按 Enter）：</div>';
+    body+='<div class="mw" id="mw'+si+'" onclick="this.querySelector(\'.wi\').focus()"><input class="wi" placeholder="輸入字詞…" onkeydown="addW(event,this,'+si+')" oninput="onInput('+si+',\'x\')"/></div>';
+  } else if(si===3){
+    body+='<table class="tbl"><tr><td class="og" style="font-size:0.7rem;color:var(--ink-lt)">原文句</td><td style="font-size:0.7rem;color:var(--ink-lt)">我的白話翻譯</td></tr>';
+    (l.rows4||[]).forEach(function(row){
+      body+='<tr><td class="og">'+row[0]+'</td><td><textarea placeholder="翻成白話…" oninput="onInput('+si+',\'x\')"></textarea></td></tr>';
+    });
+    body+='</table>';
+  }
+
+  body+='<div class="br">';
+  if(si>0) body+='<button class="btn" onclick="goSt('+(si-1)+')">← 上一步</button>';
+  body+='<button class="btn ok" onclick="markDone('+si+')">'+(si<4?'完成這步 →':'完成翻譯 ✓')+'</button>';
+  // ask button with lock
+  var helpQ=l.helps&&l.helps[si]?l.helps[si]:'';
+  var askUnlocked=window._typed&&window._typed[si];
+  body+='<button class="btn ask'+(askUnlocked?' unlocked':'')+'" id="askBtn'+si+'" onclick="'+(askUnlocked&&helpQ?'sendPrompt(\''+helpQ.replace(/'/g,"\\'")+'\')':'showLockMsg()')+'">卡關了 ↗</button>';
+  body+='</div>';
+  body+='<div class="hint">'+(askUnlocked?'「卡關了」會請 AI 給提示，不直接給答案':'先填寫一點內容，才能解鎖「卡關了」按鈕')+'</div>';
+  body+='<div style="margin-top:0.4rem"><button style="font-size:0.68rem;color:var(--ink-lt);background:none;border:none;cursor:pointer;padding:0" onclick="toggleScaf('+si+')">顯示起步提示 ▾</button></div>';
+  body+='</div></div>';
+  return body;
+}
+
+var _typed={};
+function onInput(si,val){
+  _typed[si]=val&&val.length>0;
+  var btn=document.getElementById('askBtn'+si);
+  if(btn){
+    if(_typed[si]){btn.classList.add('unlocked');btn.title='';}
+    else{btn.classList.remove('unlocked');}
+    if(CUR&&CUR.helps&&CUR.helps[si]&&_typed[si]){
+      btn.onclick=function(){sendPrompt(CUR.helps[si]);};
+    } else {
+      btn.onclick=showLockMsg;
+    }
+  }
+}
+
+function showLockMsg(){
+  alert('請先填寫一點內容（哪怕只有一個字），才能解鎖卡關求救。\n\n學習科學告訴我們：先嘗試，再求助，記憶效果最好！');
+}
+
+function toggleScaf(si){var s=document.getElementById('scaf'+si);if(s)s.classList.toggle('on');}
+function addW(e,inp,si){if(e.key==='Enter'&&inp.value.trim()){var w=inp.value.trim();var b=document.createElement('span');b.className='wb';b.innerHTML=w+'<span onclick="this.parentNode.remove()">×</span>';inp.parentNode.insertBefore(b,inp);inp.value='';onInput(si,'x');}}
+function goSt(i){STEPIDX=i;_typed={};renderMain();}
+function toggleSrc(el){var sb=document.getElementById('sb');var tg=document.getElementById('stg');if(sb){sb.classList.toggle('hide');tg.textContent=sb.classList.contains('hide')?'▶ 展開':'▼ 收合';}}
+
+function markDone(si){
+  if(!DONE[CUR.id]) DONE[CUR.id]={steps:[false,false,false,false,false],pisa:{}};
+  DONE[CUR.id].steps[si]=true;
+  _typed={};
+  if(si<4){STEPIDX=si+1;} else {STEPIDX=4;}
+  renderMain();
+  buildPicker();
+}
+
+function setPhase(p){PHASE=p;_typed={};renderMain();}
+
+function selectOpt(key,oi,ans){
+  if(!DONE[CUR.id]) DONE[CUR.id]={steps:[false,false,false,false,false],pisa:{}};
+  if(DONE[CUR.id].pisa[key]&&DONE[CUR.id].pisa[key].answered) return;
+  DONE[CUR.id].pisa[key]=DONE[CUR.id].pisa[key]||{};
+  DONE[CUR.id].pisa[key].sel=oi;
+  renderMain();
+}
+
+function checkOpt(key,ans){
+  if(!DONE[CUR.id]||!DONE[CUR.id].pisa[key]||DONE[CUR.id].pisa[key].sel===undefined){
+    alert('請先選擇一個答案！');return;
+  }
+  DONE[CUR.id].pisa[key].answered=true;
+  renderMain();
+}
+
+function saveOpenQ(key,val){
+  if(!DONE[CUR.id]) DONE[CUR.id]={steps:[false,false,false,false,false],pisa:{}};
+  DONE[CUR.id].pisa[key]={answered:val.length>20,val:val};
+}
+
+function askPisa(type,q){
+  sendPrompt('我在做「'+type+'」類型的閱讀題目，題目是：「'+q+'」。請給我思考這種題型的方法，但不要直接告訴我答案是什麼。');
+}
+
+function pickEr(el){document.querySelectorAll('.er').forEach(function(e){e.classList.remove('on');});el.classList.add('on');}
+
+buildPicker();
+</script>
+</body>
+</html>

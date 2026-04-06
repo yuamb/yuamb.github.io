@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>教師儀表板｜古文探究實作</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700&family=Noto+Sans+TC:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1a1714;--ink-mid:#3d3830;--ink-lt:#7a7268;--paper:#f7f3ee;--paper-2:#ede8e0;--paper-3:#ddd5c8;--cat1:#8b2020;--cat1-lt:#f5e8e8;--cat2:#1a5c38;--cat2-lt:#e6f2ec;--cat3:#1e3a6e;--cat3-lt:#e6ecf5;--gold:#b8860b;--gold-lt:#faf3df}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--paper);color:var(--ink);line-height:1.7;min-height:100vh}
+
+/* LOGIN GATE */
+#loginGate{position:fixed;inset:0;background:var(--paper);z-index:999;display:flex;align-items:center;justify-content:center}
+.login-box{background:white;border:1px solid var(--paper-3);border-radius:10px;padding:2.5rem 2rem;max-width:360px;width:100%;text-align:center}
+.login-box h2{font-family:'Noto Serif TC',serif;font-size:1.25rem;font-weight:700;margin-bottom:0.4rem}
+.login-box p{font-size:0.8rem;color:var(--ink-lt);margin-bottom:1.5rem}
+.login-box input{width:100%;padding:0.6rem 0.8rem;border:1px solid var(--paper-3);border-radius:4px;font-size:0.9rem;margin-bottom:0.75rem;font-family:'Noto Sans TC',sans-serif;color:var(--ink);background:var(--paper)}
+.login-box button{width:100%;padding:0.6rem;background:var(--ink);color:var(--paper);border:none;border-radius:4px;font-size:0.88rem;cursor:pointer;font-family:'Noto Sans TC',sans-serif}
+.login-box button:hover{background:var(--cat1)}
+.login-err{font-size:0.75rem;color:var(--cat1);margin-top:0.4rem;display:none}
+
+/* MAIN HIDDEN UNTIL LOGIN */
+#appWrap{display:none}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(247,243,238,0.93);backdrop-filter:blur(12px);border-bottom:1px solid var(--paper-3);padding:0.65rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav-logo{font-family:'Noto Serif TC',serif;font-size:0.88rem;font-weight:700;color:var(--ink);text-decoration:none}
+.nav-tag{font-size:0.65rem;background:var(--cat1-lt);color:var(--cat1);padding:0.2rem 0.6rem;border-radius:2px;font-weight:500;letter-spacing:0.05em;border:1px solid var(--cat1)}
+.nav-right{display:flex;align-items:center;gap:0.75rem}
+.nav-home{font-size:0.75rem;color:var(--ink-lt);text-decoration:none;padding:0.3rem 0.7rem;border:1px solid var(--paper-3);border-radius:3px}
+.nav-logout{font-size:0.72rem;color:var(--ink-lt);background:none;border:1px solid var(--paper-3);border-radius:3px;padding:0.3rem 0.7rem;cursor:pointer}
+.nav-logout:hover{border-color:var(--cat1);color:var(--cat1)}
+
+/* DASHBOARD */
+.db{max-width:960px;margin:0 auto;padding:1.5rem}
+.db-head{margin-bottom:1.5rem}
+.db-head h1{font-family:'Noto Serif TC',serif;font-size:1.5rem;font-weight:700;margin-bottom:0.25rem}
+.db-head p{font-size:0.82rem;color:var(--ink-lt)}
+
+/* TABS */
+.tab-row{display:flex;gap:0.4rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{padding:0.4rem 1rem;border-radius:4px;border:1px solid var(--paper-3);font-size:0.78rem;cursor:pointer;background:white;color:var(--ink-lt);font-family:'Noto Sans TC',sans-serif;transition:all .15s}
+.tab:hover{border-color:var(--ink-lt);color:var(--ink)}
+.tab.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0.75rem;margin-bottom:1.25rem}
+.stat-card{background:white;border:1px solid var(--paper-3);border-radius:6px;padding:0.85rem 1rem}
+.stat-label{font-size:0.68rem;color:var(--ink-lt);margin-bottom:0.3rem;letter-spacing:0.05em}
+.stat-num{font-size:1.6rem;font-weight:500;font-family:'DM Serif Display',serif;color:var(--ink);line-height:1}
+.stat-sub{font-size:0.68rem;color:var(--ink-lt);margin-top:0.2rem}
+.stat-card.alert .stat-num{color:var(--cat1)}
+
+/* SECTION */
+.sec-head{font-size:0.78rem;font-weight:500;color:var(--ink);margin-bottom:0.6rem;display:flex;align-items:center;justify-content:space-between}
+.sec-sub{font-size:0.68rem;color:var(--ink-lt);font-weight:400}
+
+/* STUCK BARS */
+.stuck-bar{background:white;border:1px solid var(--paper-3);border-radius:5px;padding:0.6rem 0.85rem;margin-bottom:0.4rem;display:flex;align-items:center;gap:0.75rem}
+.stuck-name{font-size:0.82rem;color:var(--ink);flex:1}
+.stuck-mini{flex:2;height:5px;background:var(--paper-3);border-radius:3px;overflow:hidden}
+.stuck-fill{height:100%;border-radius:3px;background:#dc2626}
+.stuck-n{font-size:0.82rem;font-weight:500;color:#dc2626;min-width:28px;text-align:right}
+.stuck-u{font-size:0.68rem;color:var(--ink-lt)}
+
+/* STUDENT TABLE */
+.stu-tbl{width:100%;border-collapse:collapse;font-size:0.78rem}
+.stu-tbl th{padding:0.5rem 0.6rem;border-bottom:1px solid var(--paper-3);font-weight:500;color:var(--ink-lt);text-align:left;font-size:0.68rem}
+.stu-tbl td{padding:0.6rem 0.6rem;border-bottom:1px solid var(--paper-3);vertical-align:middle}
+.stu-tbl tr:hover td{background:var(--paper)}
+.stu-tbl tr.detail-row td{background:var(--paper-2);padding:0;border-bottom:1px solid var(--paper-3)}
+.detail-inner{padding:0.65rem 0.85rem;font-size:0.75rem;color:var(--ink-lt);line-height:1.6;display:none}
+.detail-inner.open{display:block}
+.step-ds{display:flex;gap:3px}
+.sd{width:18px;height:18px;border-radius:50%;font-size:0.55rem;display:flex;align-items:center;justify-content:center;font-weight:500;border:0.5px solid}
+.sd.done{background:#EAF3DE;color:#3B6D11;border-color:#97C459}
+.sd.stuck{background:#FCEBEB;color:#991b1b;border-color:#fca5a5}
+.sd.empty{background:var(--paper-2);color:var(--ink-lt);border-color:var(--paper-3)}
+.badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:0.68rem}
+.b-alert{background:var(--cat1-lt);color:var(--cat1)}
+.b-cat1{background:var(--cat1-lt);color:var(--cat1)}
+.b-cat2{background:var(--cat2-lt);color:var(--cat2)}
+.b-cat3{background:var(--cat3-lt);color:var(--cat3)}
+.exp-btn{font-size:0.68rem;color:var(--ink-lt);background:white;border:1px solid var(--paper-3);border-radius:3px;padding:2px 6px;cursor:pointer}
+.exp-btn:hover{background:var(--paper-2)}
+.se{display:flex;align-items:baseline;gap:5px;margin-bottom:2px}
+.se-s{background:var(--cat1-lt);color:var(--cat1);font-size:0.65rem;padding:1px 4px;border-radius:2px;white-space:nowrap}
+
+/* LESSON BARS */
+.lp-row{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.4rem}
+.lp-name{font-size:0.78rem;color:var(--ink);min-width:110px}
+.lp-bar{flex:1;height:6px;background:var(--paper-3);border-radius:3px;overflow:hidden}
+.lp-fill{height:100%;border-radius:3px;transition:width .5s}
+.lp-pct{font-size:0.72rem;color:var(--ink-lt);min-width:34px;text-align:right}
+
+/* PISA ANALYSIS */
+.pisa-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.75rem;margin-bottom:1rem}
+.pisa-stat{background:white;border:1px solid var(--paper-3);border-radius:6px;padding:0.85rem 1rem}
+.pisa-stat .pl{font-size:0.68rem;font-weight:500;letter-spacing:0.08em;margin-bottom:0.4rem}
+.pisa-stat .pn{font-size:1.5rem;font-weight:500;font-family:'DM Serif Display',serif}
+.pisa-stat .ps{font-size:0.68rem;color:var(--ink-lt);margin-top:0.2rem}
+.p1-color{color:#0f766e}.p2-color{color:#7c3aed}.p3-color{color:#be185d}
+
+/* AI BUTTONS */
+.ai-btn{padding:0.35rem 0.85rem;border-radius:3px;border:1px solid var(--paper-3);font-size:0.72rem;cursor:pointer;background:white;color:var(--ink-mid);margin-right:0.4rem;margin-top:0.4rem;font-family:'Noto Sans TC',sans-serif}
+.ai-btn:hover{background:var(--paper-2)}
+.ai-btn.primary{background:var(--cat3-lt);color:var(--cat3);border-color:var(--cat3)}
+
+/* FILTER */
+.filter-row{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:0.85rem;align-items:center}
+.filter-row input,.filter-row select{font-size:0.78rem;padding:0.35rem 0.6rem;border:1px solid var(--paper-3);border-radius:4px;background:white;color:var(--ink);font-family:'Noto Sans TC',sans-serif}
+.filter-row input{flex:1;min-width:120px}
+
+.hidden{display:none}
+@media(max-width:600px){.stat-grid{grid-template-columns:repeat(2,1fr)}.pisa-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div id="loginGate">
+  <div class="login-box">
+    <h2>教師專區</h2>
+    <p>此頁面僅供教師使用<br>請輸入密碼進入</p>
+    <input type="password" id="pwInput" placeholder="教師密碼" onkeydown="if(event.key==='Enter')checkPw()">
+    <button onclick="checkPw()">進入儀表板</button>
+    <div class="login-err" id="pwErr">密碼錯誤，請再試一次</div>
+    <div style="margin-top:1rem;font-size:0.7rem;color:var(--ink-lt)">預設密碼：teacher2025<br>（請在 teacher.html 中修改）</div>
+  </div>
+</div>
+
+<div id="appWrap">
+<nav>
+  <div style="display:flex;align-items:center;gap:0.6rem">
+    <a class="nav-logo" href="index.html">古文探究實作</a>
+    <span class="nav-tag">教師專區</span>
+  </div>
+  <div class="nav-right">
+    <a class="nav-home" href="index.html">← 首頁</a>
+    <button class="nav-logout" onclick="logout()">登出</button>
+  </div>
+</nav>
+
+<div class="db">
+  <div class="db-head">
+    <h1>教師儀表板</h1>
+    <p>文言文五步拆解 × PISA三層閱讀｜全班學習狀況即時總覽（示範資料）</p>
+  </div>
+
+  <div class="tab-row">
+    <button class="tab on" onclick="switchTab('overview',this)">總覽</button>
+    <button class="tab" onclick="switchTab('stuck',this)">卡關分析</button>
+    <button class="tab" onclick="switchTab('pisa',this)">PISA 三層</button>
+    <button class="tab" onclick="switchTab('students',this)">學生個人</button>
+    <button class="tab" onclick="switchTab('lessons',this)">篇目進度</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="overview">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-label">全班學生</div><div class="stat-num">28</div><div class="stat-sub">人</div></div>
+      <div class="stat-card"><div class="stat-label">本週活躍</div><div class="stat-num">21</div><div class="stat-sub">人有練習紀錄</div></div>
+      <div class="stat-card alert"><div class="stat-label">需關注</div><div class="stat-num">5</div><div class="stat-sub">自評😰或卡關3次+</div></div>
+      <div class="stat-card"><div class="stat-label">平均完成率</div><div class="stat-num">58%</div><div class="stat-sub">五步＋PISA題</div></div>
+    </div>
+    <div class="sec-head">本週卡關熱點<span class="sec-sub">（五步翻譯）</span></div>
+    <div id="overviewStuck"></div>
+    <div style="margin-top:1rem" class="sec-head">情緒分布</div>
+    <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;background:white;border:1px solid var(--paper-3);border-radius:6px;padding:0.85rem 1rem;margin-bottom:0.75rem">
+      <div style="display:flex;align-items:center;gap:0.4rem"><span style="font-size:1.1rem">😰</span><span style="font-size:0.78rem;color:var(--ink-lt)">5人</span></div>
+      <div style="display:flex;align-items:center;gap:0.4rem"><span style="font-size:1.1rem">😅</span><span style="font-size:0.78rem;color:var(--ink-lt)">8人</span></div>
+      <div style="display:flex;align-items:center;gap:0.4rem"><span style="font-size:1.1rem">🙂</span><span style="font-size:0.78rem;color:var(--ink-lt)">9人</span></div>
+      <div style="display:flex;align-items:center;gap:0.4rem"><span style="font-size:1.1rem">😄</span><span style="font-size:0.78rem;color:var(--ink-lt)">4人</span></div>
+      <div style="display:flex;align-items:center;gap:0.4rem"><span style="font-size:1.1rem">🌟</span><span style="font-size:0.78rem;color:var(--ink-lt)">2人</span></div>
+      <button class="ai-btn primary" style="margin-left:auto" onclick="sendPrompt('班上有5位學生自評😰、8位😅。針對這兩組學生，幫我設計差異化輔導策略，分別說明各自的根本原因和對應方法。')">設計差異化策略 ↗</button>
+    </div>
+  </div>
+
+  <!-- STUCK -->
+  <div id="stuck" class="hidden">
+    <div class="sec-head">五步翻譯卡關分析<span class="sec-sub">（各步驟累計）</span></div>
+    <div id="stuckDetail"></div>
+    <div style="margin-top:0.75rem">
+      <button class="ai-btn primary" onclick="sendPrompt('學生在「補主語」（Step 2）和「逐句白話」（Step 4）卡關最多。請幫我設計一個10分鐘以內的補救活動，可在課堂上使用。')">設計補救活動 ↗</button>
+      <button class="ai-btn" onclick="sendPrompt('學生普遍在古今義差異詞（如「謝」「所以」「交通」）上卡關。請給我一套教學生識別古今義差異的系統性方法，適合高中生程度。')">古今義教學策略 ↗</button>
+    </div>
+  </div>
+
+  <!-- PISA -->
+  <div id="pisa" class="hidden">
+    <div class="sec-head">PISA 三層閱讀完成率</div>
+    <div class="pisa-row">
+      <div class="pisa-stat"><div class="pl p1-color">第一層｜擷取訊息</div><div class="pn p1-color">78%</div><div class="ps">答對率平均 82%</div></div>
+      <div class="pisa-stat"><div class="pl p2-color">第二層｜發展解釋</div><div class="pn p2-color">61%</div><div class="ps">答對率平均 58%</div></div>
+      <div class="pisa-stat"><div class="pl p3-color">第三層｜省思評鑑</div><div class="pn p3-color">43%</div><div class="ps">完成率（開放題）</div></div>
+    </div>
+    <div class="sec-head">各層說明</div>
+    <div style="background:white;border:1px solid var(--paper-3);border-radius:6px;padding:0.85rem 1rem;font-size:0.78rem;line-height:1.8;color:var(--ink-lt)">
+      第一層「擷取訊息」完成率高（78%），顯示學生能找到文本中的直接資訊。<br>
+      第二層「發展解釋」答對率明顯下降（58%），常見錯誤：把表面意思當作深層意圖，例如把修辭目的答成字面行動。<br>
+      第三層「省思評鑑」完成率最低（43%），且開放題回答普遍偏短（平均50字），缺乏具體立場和理由。<br>
+      <strong style="color:var(--ink)">建議：</strong>重點加強第二層的「推論步驟」教學，以及第三層「立場＋理由＋例子」的開放題寫作鷹架。
+    </div>
+    <div style="margin-top:0.75rem">
+      <button class="ai-btn primary" onclick="sendPrompt('學生在PISA第二層「發展解釋」的答對率只有58%，常見錯誤是把表面意思當作深層意圖。請設計一個「如何分辨表層vs深層意涵」的教學活動，以〈師說〉為例。')">設計推論教學 ↗</button>
+      <button class="ai-btn" onclick="sendPrompt('學生第三層開放題回答普遍偏短，缺乏立場和理由。請給我一個「立場＋理由＋例子」的寫作鷹架，適合直接給學生使用。')">開放題寫作鷹架 ↗</button>
+    </div>
+  </div>
+
+  <!-- STUDENTS -->
+  <div id="students" class="hidden">
+    <div class="filter-row">
+      <input placeholder="搜尋姓名…" oninput="filterStu(this.value)" id="stuSearch">
+      <select onchange="filterMood(this.value)"><option value="">所有情緒</option><option>😰</option><option>😅</option><option>🙂</option><option>😄</option><option>🌟</option></select>
+      <select onchange="filterAlert(this.value)"><option value="">所有狀態</option><option value="1">需關注</option><option value="0">正常</option></select>
+    </div>
+    <table class="stu-tbl">
+      <thead><tr><th>姓名</th><th>最近練習</th><th>篇目</th><th>五步進度</th><th>PISA 完成</th><th>卡關</th><th>情緒</th><th>狀態</th><th></th></tr></thead>
+      <tbody id="stuBody"></tbody>
+    </table>
+  </div>
+
+  <!-- LESSONS -->
+  <div id="lessons" class="hidden">
+    <div class="sec-head">各篇完成率（全班）</div>
+    <div id="lessonProg"></div>
+  </div>
+</div>
+</div>
+
+<script>
+var PW='teacher2025';
+
+function checkPw(){
+  var v=document.getElementById('pwInput').value;
+  if(v===PW){
+    document.getElementById('loginGate').style.display='none';
+    document.getElementById('appWrap').style.display='block';
+    buildAll();
+  } else {
+    document.getElementById('pwErr').style.display='block';
+    document.getElementById('pwInput').value='';
+  }
+}
+function logout(){document.getElementById('loginGate').style.display='flex';document.getElementById('appWrap').style.display='none';document.getElementById('pwInput').value='';}
+
+var STUCK_STEPS=[
+  {step:'Step 1 斷句切段',count:8,max:47},
+  {step:'Step 2 補主語',count:14,max:47},
+  {step:'Step 3 標生字詞',count:7,max:47},
+  {step:'Step 4 逐句白話',count:13,max:47},
+  {step:'Step 5 整段潤飾',count:5,max:47},
+];
+var STUCK_DETAIL=[
+  {step:'Step 2',q:'如何判斷省略的主語',n:9,lessons:['師說','燭之武退秦師','出師表']},
+  {step:'Step 4',q:'文言語序轉換白話',n:8,lessons:['師說','諫逐客書','大同與小康']},
+  {step:'Step 4',q:'長句哲學辯證翻譯',n:5,lessons:['赤壁賦']},
+  {step:'Step 2',q:'多人對話中主語切換',n:5,lessons:['鴻門宴','勞山道士','虯髯客傳']},
+  {step:'Step 3',q:'古今義差異大的詞',n:4,lessons:['出師表','桃花源記','鴻門宴']},
+];
+var STUDENTS=[
+  {name:'王小明',date:'04/04',lesson:'師說',steps:[true,true,true,false,false],pisa:'1/4',stuck:[{s:2,q:'主語判斷'},{s:3,q:'語序翻譯'}],mood:'😰',alert:true,note:'連續三天只完成前三步，Step 4 翻譯卡關'},
+  {name:'林詩涵',date:'04/04',lesson:'鴻門宴',steps:[true,true,true,true,true],pisa:'4/4',stuck:[{s:3,q:'潛台詞分析'}],mood:'🌟',alert:false,note:'全部完成，第二層推論題答得很好'},
+  {name:'張宇豪',date:'04/03',lesson:'燭之武退秦師',steps:[true,true,false,false,false],pisa:'2/4',stuck:[{s:1,q:'斷句方法'},{s:2,q:'主語切換'}],mood:'😅',alert:true,note:'Step 2 卡了兩次，對省略主語概念不清楚'},
+  {name:'陳雅婷',date:'04/04',lesson:'赤壁賦',steps:[true,true,true,true,false],pisa:'3/4',stuck:[{s:3,q:'辯證句型'}],mood:'🙂',alert:false,note:'對哲學辯證有興趣，第二層推論題有自己的想法'},
+  {name:'李冠宇',date:'04/02',lesson:'桃花源記',steps:[true,false,false,false,false],pisa:'1/4',stuck:[{s:0,q:'斷句起點'},{s:0,q:'語氣詞辨識'}],mood:'😰',alert:true,note:'Step 1 連問兩次，斷句基礎需加強'},
+  {name:'吳思婷',date:'04/04',lesson:'項脊軒志',steps:[true,true,true,true,true],pisa:'4/4',stuck:[],mood:'😄',alert:false,note:''},
+  {name:'黃柏翰',date:'04/03',lesson:'勞山道士',steps:[true,true,true,false,false],pisa:'2/4',stuck:[{s:2,q:'薪水古今義'}],mood:'😅',alert:false,note:''},
+  {name:'鄭心怡',date:'04/04',lesson:'出師表',steps:[true,true,true,true,false],pisa:'3/4',stuck:[{s:1,q:'感激古義'}],mood:'🙂',alert:false,note:''},
+  {name:'劉承翰',date:'03/31',lesson:'大同與小康',steps:[true,false,false,false,false],pisa:'0/4',stuck:[{s:0,q:'並列句斷句'}],mood:'😰',alert:true,note:'三天沒有新練習紀錄'},
+  {name:'蔡宛庭',date:'04/04',lesson:'晚遊六橋待月記',steps:[true,true,true,true,true],pisa:'4/4',stuck:[{s:1,q:'為字辨別'}],mood:'🌟',alert:false,note:''},
+];
+var LESSONS_PROG=[
+  {title:'師說',cat:1,pct:72},{title:'諫逐客書',cat:1,pct:55},{title:'燭之武退秦師',cat:1,pct:61},{title:'出師表',cat:1,pct:68},{title:'勸和論',cat:1,pct:43},
+  {title:'項脊軒志',cat:2,pct:80},{title:'晚遊六橋待月記',cat:2,pct:75},{title:'虯髯客傳',cat:2,pct:50},{title:'勞山道士',cat:2,pct:58},{title:'桃花源記',cat:2,pct:40},
+  {title:'大同與小康',cat:3,pct:33},{title:'鴻門宴',cat:3,pct:65},{title:'赤壁賦',cat:3,pct:48},{title:'鹿港乘桴記',cat:3,pct:30},{title:'畫菊自序',cat:3,pct:25},
+];
+
+var openRows=new Set();
+var currentStu=STUDENTS.slice();
+
+function buildAll(){buildOverview();buildStuck();buildStudents(currentStu);buildLessons();}
+
+function buildOverview(){
+  var html='';
+  STUCK_STEPS.forEach(function(s){
+    var pct=Math.round(s.count/s.max*100);
+    html+='<div class="stuck-bar"><div class="stuck-name">'+s.step+'</div><div class="stuck-mini"><div class="stuck-fill" style="width:'+pct+'%"></div></div><div class="stuck-n">'+s.count+'</div><div class="stuck-u">次</div></div>';
+  });
+  document.getElementById('overviewStuck').innerHTML=html;
+}
+
+function buildStuck(){
+  var html='';
+  STUCK_DETAIL.forEach(function(s){
+    html+='<div class="stuck-bar" style="flex-wrap:wrap;gap:0.4rem"><span class="badge b-alert">'+s.step+'</span><div class="stuck-name">'+s.q+'<div style="font-size:0.65rem;color:var(--ink-lt)">出現於：'+s.lessons.join('、')+'</div></div><div class="stuck-n">'+s.n+'</div><div class="stuck-u">次</div></div>';
+  });
+  document.getElementById('stuckDetail').innerHTML=html;
+}
+
+function buildStudents(data){
+  var html='';
+  data.forEach(function(s,i){
+    var dc=s.steps.filter(Boolean).length;
+    var catN=['','b-cat1','b-cat2','b-cat3'][i%3+1];
+    var dots=s.steps.map(function(d,j){
+      var hs=s.stuck.some(function(sk){return sk.s===j;});
+      return '<div class="sd '+(d?'done':hs?'stuck':'empty')+'">'+(d?'✓':hs?'!':j+1)+'</div>';
+    }).join('');
+    html+='<tr onclick="toggleDet('+i+')" style="cursor:pointer"><td style="font-weight:500">'+s.name+'</td><td style="color:var(--ink-lt)">'+s.date+'</td><td><span class="badge '+catN+'">〈'+s.lesson+'〉</span></td><td><div class="step-ds">'+dots+'</div><div style="font-size:0.65rem;color:var(--ink-lt)">'+dc+'/5步</div></td><td style="color:var(--ink-lt)">'+s.pisa+'</td><td style="color:'+(s.stuck.length>2?'var(--cat1)':'var(--ink)')+'">'+s.stuck.length+'</td><td style="font-size:1rem">'+s.mood+'</td><td>'+(s.alert?'<span class="badge b-alert">需關注</span>':'')+'</td><td><button class="exp-btn" onclick="event.stopPropagation();toggleDet('+i+')">詳情</button></td></tr>';
+    html+='<tr class="detail-row"><td colspan="9"><div class="detail-inner'+(openRows.has(i)?' open':'')+'\" id="det'+i+'">';
+    if(s.note) html+='<strong style="color:var(--ink)">觀察：</strong>'+s.note+'<br>';
+    if(s.stuck.length){
+      html+='<div style="margin-top:0.3rem"><strong style="color:var(--ink)">卡關：</strong>';
+      s.stuck.forEach(function(sk){html+='<div class="se"><span class="se-s">Step '+(sk.s+1)+'</span><span>'+sk.q+'</span></div>';});
+      html+='</div>';
+    }
+    html+='<div style="margin-top:0.5rem">';
+    html+='<button class="ai-btn primary" onclick="sendPrompt(\'學生'+s.name+'在〈'+s.lesson+'〉的卡關是：'+s.stuck.map(function(sk){return 'Step'+(sk.s+1)+sk.q;}).join('、')+'，情緒自評是'+s.mood+'。請幫我設計一個5分鐘的一對一輔導對話，引導他突破這個困難，但不直接告訴他答案。\')">設計輔導對話 ↗</button>';
+    html+='<button class="ai-btn" onclick="sendPrompt(\''+s.name+'完成了'+dc+'/5步，PISA完成'+s.pisa+'，情緒是'+s.mood+'。請幫我寫一段30字以內的具體鼓勵文字，不要只是籠統稱讚。\')">寫具體回饋 ↗</button>';
+    html+='</div></div></td></tr>';
+  });
+  document.getElementById('stuBody').innerHTML=html;
+}
+
+function toggleDet(i){
+  if(openRows.has(i)) openRows.delete(i);
+  else openRows.add(i);
+  var d=document.getElementById('det'+i);
+  if(d) d.classList.toggle('open',openRows.has(i));
+}
+
+function filterStu(q){currentStu=STUDENTS.filter(function(s){return s.name.includes(q);});buildStudents(currentStu);}
+function filterMood(m){currentStu=m?STUDENTS.filter(function(s){return s.mood===m;}):STUDENTS.slice();buildStudents(currentStu);}
+function filterAlert(v){if(v==='')currentStu=STUDENTS.slice();else currentStu=STUDENTS.filter(function(s){return v==='1'?s.alert:!s.alert;});buildStudents(currentStu);}
+
+function buildLessons(){
+  var catC=['','var(--cat1)','var(--cat2)','var(--cat3)'];
+  var catN={1:'第一類 說服',2:'第二類 感受',3:'第三類 判讀'};
+  var lastCat=0;var html='';
+  LESSONS_PROG.forEach(function(l){
+    if(l.cat!==lastCat){html+='<div style="font-size:0.68rem;font-weight:500;color:var(--ink-lt);margin:0.75rem 0 0.3rem">'+catN[l.cat]+'</div>';lastCat=l.cat;}
+    html+='<div class="lp-row"><div class="lp-name">〈'+l.title+'〉</div><div class="lp-bar"><div class="lp-fill" style="width:'+l.pct+'%;background:'+catC[l.cat]+'"></div></div><div class="lp-pct">'+l.pct+'%</div></div>';
+  });
+  document.getElementById('lessonProg').innerHTML=html;
+}
+
+function switchTab(id,el){
+  ['overview','stuck','pisa','students','lessons'].forEach(function(t){document.getElementById(t).classList.toggle('hidden',t!==id);});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('on');});
+  el.classList.add('on');
+}
+</script>
+</body>
+</html>
