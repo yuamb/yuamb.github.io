@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古文探究實作｜高中國文課程資源</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400;500&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:     #1a1714;
+  --ink-mid: #3d3830;
+  --ink-lt:  #7a7268;
+  --paper:   #f7f3ee;
+  --paper-2: #ede8e0;
+  --paper-3: #e2dbd0;
+  --cat1:    #8b2020;
+  --cat1-lt: #f5e8e8;
+  --cat2:    #1a5c38;
+  --cat2-lt: #e6f2ec;
+  --cat3:    #1e3a6e;
+  --cat3-lt: #e6ecf5;
+  --gold:    #b8860b;
+  --gold-lt: #faf3df;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ─── DECORATIVE BACKGROUND ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 10% 20%, rgba(139,32,32,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 90% 80%, rgba(30,58,110,0.04) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── HEADER / HERO ─── */
+header {
+  position: relative;
+  padding: 5rem 2rem 4rem;
+  text-align: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hero-deco {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: min(700px, 100%);
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-deco::before {
+  content: '古';
+  position: absolute;
+  top: -2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(12rem, 30vw, 22rem);
+  font-weight: 700;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(139,32,32,0.07);
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.header-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--cat1);
+  border: 1px solid var(--cat1);
+  padding: 0.3rem 0.9rem;
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: fadeUp 0.6s ease forwards 0.1s;
+}
+
+header h1 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(2rem, 6vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards 0.25s;
+}
+
+header h1 em {
+  font-style: italic;
+  font-family: 'DM Serif Display', serif;
+  color: var(--cat1);
+}
+
+.hero-sub {
+  font-size: 1rem;
+  color: var(--ink-lt);
+  max-width: 520px;
+  margin: 0 auto 2.5rem;
+  font-weight: 300;
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards 0.4s;
+}
+
+.hero-cta {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards 0.55s;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.75rem 1.75rem;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: 0.02em;
+}
+.btn-primary:hover { background: var(--cat1); transform: translateY(-1px); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--ink);
+  padding: 0.75rem 1.75rem;
+  border-radius: 3px;
+  border: 1px solid var(--paper-3);
+  font-size: 0.9rem;
+  font-weight: 400;
+  text-decoration: none;
+  transition: border-color 0.2s, background 0.2s, transform 0.15s;
+}
+.btn-secondary:hover { border-color: var(--ink-mid); background: var(--paper-2); transform: translateY(-1px); }
+
+/* ─── DIVIDER ─── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.divider-line { flex: 1; height: 1px; background: var(--paper-3); }
+.divider-mark {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 0.75rem;
+  color: var(--ink-lt);
+  letter-spacing: 0.15em;
+  white-space: nowrap;
+}
+
+/* ─── SECTION WRAPPER ─── */
+.section {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.section-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  font-weight: 500;
+  color: var(--ink-lt);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.section-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+.section-desc {
+  font-size: 0.93rem;
+  color: var(--ink-lt);
+  max-width: 560px;
+  margin-bottom: 2.5rem;
+  font-weight: 300;
+}
+
+/* ─── STEP FLOW ─── */
+.steps-flow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.steps-flow::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--paper-3) 20%, var(--paper-3) 80%, transparent);
+}
+
+.step-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 0.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.step-num {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem;
+  position: relative;
+  z-index: 1;
+  border: 1.5px solid var(--paper-3);
+  background: var(--paper);
+  transition: all 0.2s;
+}
+
+.step-item:hover .step-num {
+  border-color: var(--cat1);
+  color: var(--cat1);
+  transform: scale(1.08);
+}
+
+.step-name {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--ink-mid);
+}
+
+.step-desc {
+  font-size: 0.72rem;
+  color: var(--ink-lt);
+  line-height: 1.4;
+}
+
+/* ─── THREE CATEGORIES ─── */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.cat-card {
+  border: 1px solid var(--paper-3);
+  border-radius: 4px;
+  padding: 1.75rem 1.5rem;
+  background: white;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: default;
+}
+
+.cat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 100%;
+  transition: width 0.2s;
+}
+
+.cat-card.c1::before { background: var(--cat1); }
+.cat-card.c2::before { background: var(--cat2); }
+.cat-card.c3::before { background: var(--cat3); }
+
+.cat-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.07); }
+.cat-card:hover::before { width: 4px; }
+
+.cat-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.5rem;
+  font-weight: 400;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+  opacity: 0.12;
+}
+
+.cat-card.c1 .cat-num { color: var(--cat1); }
+.cat-card.c2 .cat-num { color: var(--cat2); }
+.cat-card.c3 .cat-num { color: var(--cat3); }
+
+.cat-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.cat-skill {
+  font-size: 0.72rem;
+  color: var(--ink-lt);
+  margin-bottom: 1rem;
+  letter-spacing: 0.03em;
+}
+
+.cat-lessons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.lesson-tag {
+  font-size: 0.68rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 2px;
+  font-weight: 400;
+}
+
+.c1 .lesson-tag { background: var(--cat1-lt); color: var(--cat1); }
+.c2 .lesson-tag { background: var(--cat2-lt); color: var(--cat2); }
+.c3 .lesson-tag { background: var(--cat3-lt); color: var(--cat3); }
+
+/* ─── TOOLS CARDS ─── */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.tool-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: white;
+  border: 1px solid var(--paper-3);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.tool-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+  border-color: var(--paper-3);
+}
+
+.tool-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+
+.ti-student { background: var(--cat1-lt); }
+.ti-teacher { background: var(--cat3-lt); }
+.ti-notion  { background: var(--cat2-lt); }
+.ti-excel   { background: var(--gold-lt); }
+
+.tool-body h3 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.tool-body p {
+  font-size: 0.8rem;
+  color: var(--ink-lt);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.tool-link {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--cat1);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.tool-link::after {
+  content: '→';
+  transition: transform 0.2s;
+}
+
+.tool-card:hover .tool-link::after { transform: translateX(3px); }
+
+/* ─── NPDL BADGE ROW ─── */
+.npdl-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.npdl-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.nb-char { background: #fff0f0; color: #991b1b; border-color: #fecaca; }
+.nb-citi { background: #fff7ed; color: #9a3412; border-color: #fed7aa; }
+.nb-coll { background: #fefce8; color: #854d0e; border-color: #fde68a; }
+.nb-comm { background: #f0fdf4; color: #166534; border-color: #bbf7d0; }
+.nb-crit { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+.nb-crea { background: #f5f3ff; color: #5b21b6; border-color: #ddd6fe; }
+
+/* ─── QUOTE / PHILOSOPHY ─── */
+.philosophy {
+  background: var(--ink);
+  color: var(--paper);
+  padding: 4rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.philosophy::before {
+  content: '文';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Noto Serif TC', serif;
+  font-size: 18rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.03);
+  pointer-events: none;
+}
+
+.philosophy blockquote {
+  font-family: 'Noto Serif TC', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: 300;
+  line-height: 1.8;
+  max-width: 680px;
+  margin: 0 auto 1rem;
+  position: relative;
+}
+
+.philosophy blockquote::before {
+  content: '「';
+  font-size: 2em;
+  color: var(--cat1);
+  line-height: 0;
+  vertical-align: -0.4em;
+  margin-right: 0.1em;
+  font-family: 'Noto Serif TC', serif;
+}
+
+.philosophy blockquote::after {
+  content: '」';
+  font-size: 2em;
+  color: var(--cat1);
+  line-height: 0;
+  vertical-align: -0.4em;
+  margin-left: 0.1em;
+  font-family: 'Noto Serif TC', serif;
+}
+
+.philosophy cite {
+  font-size: 0.8rem;
+  color: rgba(247,243,238,0.4);
+  letter-spacing: 0.1em;
+  font-style: normal;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  padding: 2.5rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--paper-3);
+  position: relative;
+  z-index: 1;
+}
+
+footer p {
+  font-size: 0.78rem;
+  color: var(--ink-lt);
+  line-height: 1.8;
+}
+
+footer a {
+  color: var(--cat1);
+  text-decoration: none;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(247, 243, 238, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--paper-3);
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 0.8rem;
+  color: var(--ink-lt);
+  text-decoration: none;
+  transition: color 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.nav-links a:hover { color: var(--cat1); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 700px) {
+  .cat-grid { grid-template-columns: 1fr; }
+  .tools-grid { grid-template-columns: 1fr; }
+  .steps-flow { grid-template-columns: repeat(3, 1fr); row-gap: 1.5rem; }
+  .steps-flow::before { display: none; }
+  .nav-links { display: none; }
+}
+
+@media (max-width: 480px) {
+  .steps-flow { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* stagger children */
+.reveal-grid > * {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal-grid.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay: 0s; }
+.reveal-grid.visible > *:nth-child(2) { opacity:1; transform:none; transition-delay: 0.08s; }
+.reveal-grid.visible > *:nth-child(3) { opacity:1; transform:none; transition-delay: 0.16s; }
+.reveal-grid.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay: 0.24s; }
+</style>
+</head>
+
+<body>
+
+<nav>
+  <a class="nav-logo" href="#">古文探究實作</a>
+  <ul class="nav-links">
+    <li><a href="#method">學習方法</a></li>
+    <li><a href="#lessons">課程篇目</a></li>
+    <li><a href="#tools">教學工具</a></li>
+    <li><a href="#npdl">NPDL框架</a></li>
+  </ul>
+</nav>
+
+<header>
+  <div class="hero-deco"></div>
+  <div class="header-badge">高中國文 ✦ 探究實作課程</div>
+  <h1>讀懂古文<br>從<em>拆解</em>開始</h1>
+  <p class="hero-sub">15 篇經典古文 × 五步拆解練習 × NPDL 深度學習框架<br>讓每一位學生都能找到進入文言文的門</p>
+  <div class="hero-cta">
+    <a href="practice.html" class="btn-primary">開始練習 →</a>
+    <a href="teacher.html" title="教師專區（需密碼）" class="btn-secondary">教師儀表板</a>
+  </div>
+</header>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <span class="divider-mark">學習方法</span>
+  <div class="divider-line"></div>
+</div>
+
+<!-- METHOD SECTION -->
+<section class="section" id="method">
+  <div class="section-label">Five Steps Method</div>
+  <h2 class="section-title reveal">每次只做一件事</h2>
+  <p class="section-desc reveal">面對文言文的焦慮，往往來自「不知從何開始」。五步拆解法把翻譯分成五個具體動作，一次一步，每步都有鷹架支撐。</p>
+
+  <div class="steps-flow reveal-grid">
+    <div class="step-item">
+      <div class="step-num">一</div>
+      <div class="step-name">斷句切段</div>
+      <div class="step-desc">找出句子邊界，加「/」切開</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">二</div>
+      <div class="step-name">補主語</div>
+      <div class="step-desc">找出省略的主詞，填入括號</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">三</div>
+      <div class="step-name">標生字詞</div>
+      <div class="step-desc">查注釋，記下不懂的字</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">四</div>
+      <div class="step-name">逐句白話</div>
+      <div class="step-desc">一句一句翻成現代語</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">五</div>
+      <div class="step-name">整段潤飾</div>
+      <div class="step-desc">加連接詞，串成通順一段</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <span class="divider-mark">課程篇目</span>
+  <div class="divider-line"></div>
+</div>
+
+<!-- LESSONS SECTION -->
+<section class="section" id="lessons">
+  <div class="section-label">15 Lessons × 3 Categories</div>
+  <h2 class="section-title reveal">三大類別，十五篇經典</h2>
+  <p class="section-desc reveal">依據核心技能分為三類，每類五篇，從說服技術到感受描寫到社會判讀，層層深入。</p>
+
+  <div class="cat-grid reveal-grid">
+    <div class="cat-card c1">
+      <div class="cat-num">01</div>
+      <div class="cat-title">說服他人・改變偏見</div>
+      <div class="cat-skill">核心技能：拆解利害 ✦ 說服路徑 ✦ 重構定義</div>
+      <div class="cat-lessons">
+        <span class="lesson-tag">師說</span>
+        <span class="lesson-tag">諫逐客書</span>
+        <span class="lesson-tag">燭之武退秦師</span>
+        <span class="lesson-tag">出師表</span>
+        <span class="lesson-tag">勸和論</span>
+      </div>
+    </div>
+    <div class="cat-card c2">
+      <div class="cat-num">02</div>
+      <div class="cat-title">描述感受・建立共鳴</div>
+      <div class="cat-skill">核心技能：觀察轉化 ✦ 情感外化 ✦ 敘事張力</div>
+      <div class="cat-lessons">
+        <span class="lesson-tag">項脊軒志</span>
+        <span class="lesson-tag">晚遊六橋待月記</span>
+        <span class="lesson-tag">虯髯客傳</span>
+        <span class="lesson-tag">勞山道士</span>
+        <span class="lesson-tag">桃花源記</span>
+      </div>
+    </div>
+    <div class="cat-card c3">
+      <div class="cat-num">03</div>
+      <div class="cat-title">判讀社會・定位自我</div>
+      <div class="cat-skill">核心技能：資訊整合 ✦ 潛台詞分析 ✦ 形象形塑</div>
+      <div class="cat-lessons">
+        <span class="lesson-tag">大同與小康</span>
+        <span class="lesson-tag">鴻門宴</span>
+        <span class="lesson-tag">赤壁賦</span>
+        <span class="lesson-tag">鹿港乘桴記</span>
+        <span class="lesson-tag">畫菊自序</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <span class="divider-mark">教學工具</span>
+  <div class="divider-line"></div>
+</div>
+
+<!-- TOOLS SECTION -->
+<section class="section" id="tools">
+  <div class="section-label">Teaching Tools</div>
+  <h2 class="section-title reveal">師生共用的工具箱</h2>
+  <p class="section-desc reveal">從學生自主練習到教師掌握全班狀況，所有工具設計都以「減少摩擦、增加清晰」為原則。</p>
+
+  <div class="tools-grid reveal-grid">
+    <a href="practice.html" class="tool-card">
+      <div class="tool-icon ti-student">📖</div>
+      <div class="tool-body">
+        <h3>15 篇互動練習</h3>
+        <p>學生版五步拆解練習，支援三種難度切換。每步都有卡關求救，不直接給答案，給提示引導思考。</p>
+        <span class="tool-link">開始練習</span>
+      </div>
+    </a>
+    <a href="teacher.html" title="教師專區（需密碼）" class="tool-card">
+      <div class="tool-icon ti-teacher">📊</div>
+      <div class="tool-body">
+        <h3>教師儀表板</h3>
+        <p>即時查看全班進度、卡關熱點分析、學生個人紀錄。可一鍵請 AI 設計補救策略或回饋文字。</p>
+        <span class="tool-link">進入儀表板</span>
+      </div>
+    </a>
+    <a href="https://www.notion.so/33a6ab4c102481d48eb8f721a1202762" target="_blank" class="tool-card">
+      <div class="tool-icon ti-notion">🗂️</div>
+      <div class="tool-body">
+        <h3>Notion 練習資料庫</h3>
+        <p>含字詞查詢庫、練習紀錄庫、各篇練習頁。學生記錄每次練習，老師可篩選需關注的同學。</p>
+        <span class="tool-link">前往 Notion</span>
+      </div>
+    </a>
+    <a href="备课地图.xlsx" class="tool-card">
+      <div class="tool-icon ti-excel">📋</div>
+      <div class="tool-body">
+        <h3>備課地圖 Excel</h3>
+        <p>15 篇共備工作表、NPDL 評量規準、進度追蹤儀表板。含師生共用自評區與四級進程描述。</p>
+        <span class="tool-link">下載 Excel</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="divider">
+  <div class="divider-line"></div>
+  <span class="divider-mark">學習框架</span>
+  <div class="divider-line"></div>
+</div>
+
+<!-- NPDL SECTION -->
+<section class="section" id="npdl">
+  <div class="section-label">NPDL Framework</div>
+  <h2 class="section-title reveal">以 NPDL 6C 框架深化學習</h2>
+  <p class="section-desc reveal">每一篇的任務設計與評量規準，都對應到新深度學習（NPDL）的六大核心能力，確保古文教學不只是翻譯練習，而是真實能力的培養。</p>
+
+  <div class="npdl-row reveal">
+    <span class="npdl-badge nb-char">Character 品格力</span>
+    <span class="npdl-badge nb-citi">Citizenship 公民力</span>
+    <span class="npdl-badge nb-coll">Collaboration 協作力</span>
+    <span class="npdl-badge nb-comm">Communication 溝通力</span>
+    <span class="npdl-badge nb-crit">Critical Thinking 批判思考</span>
+    <span class="npdl-badge nb-crea">Creativity 創造力</span>
+  </div>
+
+  <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem;" class="reveal-grid">
+    <div style="padding: 1.25rem; background: white; border: 1px solid var(--paper-3); border-radius: 4px;">
+      <div style="font-size: 0.72rem; color: var(--ink-lt); margin-bottom: 0.4rem; letter-spacing: 0.05em;">評量架構</div>
+      <div style="font-size: 0.9rem; font-weight: 500;">四級進程</div>
+      <div style="font-size: 0.78rem; color: var(--ink-lt); margin-top: 0.25rem;">Beginning → Developing → Accelerating → Proficient</div>
+    </div>
+    <div style="padding: 1.25rem; background: white; border: 1px solid var(--paper-3); border-radius: 4px;">
+      <div style="font-size: 0.72rem; color: var(--ink-lt); margin-bottom: 0.4rem; letter-spacing: 0.05em;">使用方式</div>
+      <div style="font-size: 0.9rem; font-weight: 500;">師生共用自評</div>
+      <div style="font-size: 0.78rem; color: var(--ink-lt); margin-top: 0.25rem;">學生自評 + 同儕互評 + 教師評量，三層對話</div>
+    </div>
+    <div style="padding: 1.25rem; background: white; border: 1px solid var(--paper-3); border-radius: 4px;">
+      <div style="font-size: 0.72rem; color: var(--ink-lt); margin-bottom: 0.4rem; letter-spacing: 0.05em;">設計原則</div>
+      <div style="font-size: 0.9rem; font-weight: 500;">每篇主要 2–3 個 C</div>
+      <div style="font-size: 0.78rem; color: var(--ink-lt); margin-top: 0.25rem;">依篇章特性對應最相關的 6C 能力，不強行全包</div>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY QUOTE -->
+<section class="philosophy">
+  <blockquote>
+    古之學者必有師。師者，所以傳道受業解惑也。
+  </blockquote>
+  <cite>韓愈〈師說〉｜第一類：說服他人</cite>
+</section>
+
+<footer>
+  <p>高中國文探究實作課程 ✦ 15 篇古文 × 五步拆解 × NPDL 深度學習<br>
+  <a href="practice.html">學生練習</a> ·
+  <a href="teacher.html" title="教師專區（需密碼）">教師儀表板</a> ·
+  <a href="https://www.notion.so/33a6ab4c102481d48eb8f721a1202762" target="_blank">Notion 資料庫</a>
+  </p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal, .reveal-grid').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
